@@ -102,7 +102,10 @@ export function scoreSellerRubric({ profileId, rehearsal, program, constraintKno
   } else {
     const scored = follow ?? first;
     const evidence = [`First question: you ${first.short} (${pointsFor(first, profileId)} of 2).`];
-    if (follow) evidence.push(`After the constraint: you ${follow.short} (${pointsFor(follow, profileId)} of 2). The revised question is the one scored.`);
+    if (follow)
+      evidence.push(
+        `After the constraint: you ${follow.short} (${pointsFor(follow, profileId)} of 2). The revised question is the one scored.`,
+      );
     else evidence.push('No follow-up yet. The score will update when you ask one.');
     evidence.push(scored.why);
     results.push({
@@ -134,7 +137,10 @@ export function scoreSellerRubric({ profileId, rehearsal, program, constraintKno
     );
     evidence.push(
       plan
-        ? `Program: it now includes ${titles(claimLessons.map((l) => l.id), program)} with a scored claim check (1 of 1).`
+        ? `Program: it now includes ${titles(
+            claimLessons.map((l) => l.id),
+            program,
+          )} with a scored claim check (1 of 1).`
         : 'Program: no scored claim-check lesson is in the program yet (0 of 1).',
     );
     if (plan && skillStillThere) {
@@ -161,14 +167,22 @@ export function scoreSellerRubric({ profileId, rehearsal, program, constraintKno
     const approvalPoint = approval.length > 0 && !movedApproval ? 1 : 0;
     const evidence = [
       accuracyPoint
-        ? `Source accuracy: ${titles(accuracy.map((c) => c.lessonId), program)} records ${[...new Set(accuracy.map((c) => c.criterionId))].join(', ')} (1 of 1).`
+        ? `Source accuracy: ${titles(
+            accuracy.map((c) => c.lessonId),
+            program,
+          )} records ${[...new Set(accuracy.map((c) => c.criterionId))].join(', ')} (1 of 1).`
         : 'Source accuracy: no lesson in the program records a claim-check criterion yet (0 of 1).',
       approval.length > 0
-        ? `Human approval: ${titles(approval.map((c) => c.lessonId), program)} keeps approval before sharing (${[...new Set(approval.map((c) => c.criterionId))].join(', ')}).`
+        ? `Human approval: ${titles(
+            approval.map((c) => c.lessonId),
+            program,
+          )} keeps approval before sharing (${[...new Set(approval.map((c) => c.criterionId))].join(', ')}).`
         : 'Human approval: no lesson in the program records an approval-before-sharing criterion yet (0 of 1).',
     ];
     if (movedApproval) {
-      evidence.push('In the conversation you proposed moving the check or the approval to Claude, which the sponsor ruled out. The approval point is withheld.');
+      evidence.push(
+        'In the conversation you proposed moving the check or the approval to Claude, which the sponsor ruled out. The approval point is withheld.',
+      );
     } else if (approval.length > 0) {
       evidence.push('Nothing you said in the conversation moved approval away from the campaign owner (1 of 1).');
     }

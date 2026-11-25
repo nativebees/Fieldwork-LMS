@@ -46,12 +46,15 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     timer.current = window.setTimeout(() => {
       setCurrent(null);
       input.onExpire?.();
-    }, input.durationMs ?? 6000);
+    }, input.durationMs ?? 4500);
   }, []);
 
-  useEffect(() => () => {
-    if (timer.current) window.clearTimeout(timer.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (timer.current) window.clearTimeout(timer.current);
+    },
+    [],
+  );
 
   const value = useMemo(() => ({ announce, toast, dismissToast }), [announce, toast, dismissToast]);
 

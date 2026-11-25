@@ -118,7 +118,10 @@ describe('diff', () => {
     const before = createDefaultProgram();
     let after = removeLesson(before, 'lesson-3')!.program;
     after = addLessonFromTemplate(after, TEMPLATE_IDS.claims, 'module-2', 0, 'lesson-9');
-    after = { ...after, lessons: { ...after.lessons, 'lesson-1': applyLessonPatch(after.lessons['lesson-1'], { title: 'Save the context' }) } };
+    after = {
+      ...after,
+      lessons: { ...after.lessons, 'lesson-1': applyLessonPatch(after.lessons['lesson-1'], { title: 'Save the context' }) },
+    };
     const changes = diffPrograms(before, after);
     expect(changes.find((c) => c.type === 'lesson-replaced')).toMatchObject({
       before: 'Package a repeatable instruction',

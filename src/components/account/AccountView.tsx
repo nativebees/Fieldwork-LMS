@@ -172,15 +172,17 @@ export function AccountView() {
                 {organization.active} of {organization.assigned}
               </span>{' '}
               assigned seats were active in the window, or{' '}
-              <span className="tabular font-semibold">{organization.activePercent === null ? 'an unavailable share' : `${organization.activePercent}%`}</span>.
-              That is activity. It does not say whether the work was useful.
+              <span className="tabular font-semibold">
+                {organization.activePercent === null ? 'an unavailable share' : `${organization.activePercent}%`}
+              </span>
+              . That is activity. It does not say whether the work was useful.
             </p>
             <div className="mt-5">
               <CohortTable cohorts={cohorts} observations={observations} priorityCohortId={primary.cohortId} />
             </div>
             <p className="mt-3 text-[12.5px] leading-snug text-ink-2">
-              Unique members are counted once. The three departments are disjoint in this fixture only, so their totals happen to add up. Real
-              groups overlap and must not be summed.
+              Unique members are counted once. The three departments are disjoint in this fixture only, so their totals happen to add up.
+              Real groups overlap and must not be summed.
             </p>
           </section>
 
@@ -261,7 +263,12 @@ export function AccountView() {
         </aside>
       </div>
 
-      <EvidenceDrawer hypothesis={evidenceHypothesis} cohort={evidenceCohort} observations={observations} onClose={() => setEvidenceFor(null)} />
+      <EvidenceDrawer
+        hypothesis={evidenceHypothesis}
+        cohort={evidenceCohort}
+        observations={observations}
+        onClose={() => setEvidenceFor(null)}
+      />
     </div>
   );
 }

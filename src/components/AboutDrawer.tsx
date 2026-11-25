@@ -62,8 +62,9 @@ export function AboutDrawer({ open, onClose }: { open: boolean; onClose: () => v
     <Modal open={open} onClose={onClose} title="How this works" eyebrow="About Fieldwork" width="md" testId="about-drawer">
       <Section title="What you are looking at">
         <p className="text-[14px] leading-relaxed">
-          Fieldwork is a working product prototype with simulated coaching. It is an independent portfolio concept by Sean Gillespie about one
-          idea: an adoption signal should lead to a better customer conversation, a fitting learning intervention and evidence of useful work.
+          Fieldwork is a working product prototype with simulated coaching. It is an independent portfolio concept by Sean Gillespie about
+          one idea: an adoption signal should lead to a better customer conversation, a fitting learning intervention and evidence of useful
+          work.
         </p>
         <p className="mt-2 text-[14px] leading-relaxed text-ink-2">
           It is not an Anthropic product and does not describe Anthropic’s internal systems.
@@ -73,7 +74,10 @@ export function AboutDrawer({ open, onClose }: { open: boolean; onClose: () => v
       <Section title="Synthetic, simulated and real">
         <dl className="flex flex-col">
           {BOUNDARIES.map((row) => (
-            <div key={row.what} className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-0.5 border-t border-rule py-2 first:border-t-0 first:pt-0">
+            <div
+              key={row.what}
+              className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-0.5 border-t border-rule py-2 first:border-t-0 first:pt-0"
+            >
               <dt className="text-[13.5px] font-semibold">{row.what}</dt>
               <dd className="justify-self-end">
                 <Tag tone="outline">{row.status}</Tag>
@@ -114,17 +118,19 @@ export function AboutDrawer({ open, onClose }: { open: boolean; onClose: () => v
           {save.mode === 'local'
             ? 'Your choices, edits and attempts are saved in this browser only, so a refresh keeps your place.'
             : 'Browser storage is blocked here, so your work is held in memory and ends when this tab closes.'}{' '}
-          There is no account, no database, no analytics and no tracking. A copied link opens the default demo. It does not carry your local edits.
+          There is no account, no database, no analytics and no tracking. A copied link opens the default demo. It does not carry your local
+          edits.
         </p>
         <p className="meta mt-2">
-          {state.events.length} local {state.events.length === 1 ? 'event' : 'events'} recorded. They appear in the JSON export and nowhere else.
+          {state.events.length} local {state.events.length === 1 ? 'event' : 'events'} recorded. They appear in the JSON export and nowhere
+          else.
         </p>
       </Section>
 
       <Section title="Sources">
         <p className="mb-3 text-[13px] leading-snug text-ink-2">
-          Summaries are written for this prototype. Official pages were read on 2026-11-25. A source with no review date is marked and is not
-          treated as authoritative.
+          Summaries are written for this prototype. Official pages were read on 2026-11-25. A source with no review date is marked and is
+          not treated as authoritative.
         </p>
         <ul className="flex flex-col gap-3.5">
           {SOURCES.map((source) => (
@@ -137,8 +143,8 @@ export function AboutDrawer({ open, onClose }: { open: boolean; onClose: () => v
 
       <Section title="Authorship">
         <p className="text-[13.5px] leading-relaxed">
-          Product direction, scenario and design brief: Sean Gillespie. Implementation: assisted by Claude Code, working from that brief. The repository
-          records the automated tests that were run. No user testing or reviewer feedback has been recorded yet.
+          Product direction, scenario and design brief: Sean Gillespie. Implementation: assisted by Claude Code, working from that brief.
+          The repository records the automated tests that were run. No user testing or reviewer feedback has been recorded yet.
         </p>
       </Section>
     </Modal>

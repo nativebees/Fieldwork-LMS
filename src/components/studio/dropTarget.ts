@@ -14,10 +14,7 @@ export const END_ZONE_ID = 'journey-end';
 export const EMPTY_PREFIX = 'empty:';
 export const TEMPLATE_PREFIX = 'tpl:';
 
-export type DropResult =
-  | { kind: 'add'; templateId: string; moduleId: string; index: number }
-  | { kind: 'reorder'; flat: string[] }
-  | null;
+export type DropResult = { kind: 'add'; templateId: string; moduleId: string; index: number } | { kind: 'reorder'; flat: string[] } | null;
 
 /** Where in a flat list something dropped on `overId` should be inserted. */
 function insertIndex(flat: string[], program: LearningProgram, overId: string): number {

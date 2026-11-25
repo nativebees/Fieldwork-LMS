@@ -109,7 +109,17 @@ const TAG_TONE: Record<Tone, string> = {
   ink: 'bg-ink text-canvas border-transparent',
 };
 
-export function Tag({ tone = 'neutral', children, className, title }: { tone?: Tone; children: ReactNode; className?: string; title?: string }) {
+export function Tag({
+  tone = 'neutral',
+  children,
+  className,
+  title,
+}: {
+  tone?: Tone;
+  children: ReactNode;
+  className?: string;
+  title?: string;
+}) {
   return (
     <span
       title={title}
@@ -141,7 +151,8 @@ export function Segmented<T extends string>({ label, value, options, onChange, s
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const onKeyDown = (event: KeyboardEvent, index: number) => {
-    const delta = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 0;
+    const delta =
+      event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 0;
     if (!delta) return;
     event.preventDefault();
     const next = (index + delta + options.length) % options.length;
@@ -150,7 +161,12 @@ export function Segmented<T extends string>({ label, value, options, onChange, s
   };
 
   return (
-    <div role="radiogroup" aria-label={label} data-testid={testId} className="inline-flex max-w-full rounded-md border border-rule-strong bg-surface p-[3px]">
+    <div
+      role="radiogroup"
+      aria-label={label}
+      data-testid={testId}
+      className="inline-flex max-w-full rounded-md border border-rule-strong bg-surface p-[3px]"
+    >
       {options.map((option, index) => {
         const selected = option.value === value;
         return (
@@ -311,7 +327,9 @@ export function SectionHeading({ eyebrow, title, aside, id }: { eyebrow?: string
 /** A labeled row in a ruled definition list. */
 export function DefRow({ term, children, className }: { term: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <div className={cn('grid grid-cols-1 gap-x-4 gap-y-0.5 border-t border-rule py-2.5 first:border-t-0 sm:grid-cols-[116px_1fr]', className)}>
+    <div
+      className={cn('grid grid-cols-1 gap-x-4 gap-y-0.5 border-t border-rule py-2.5 first:border-t-0 sm:grid-cols-[116px_1fr]', className)}
+    >
       <dt className="eyebrow pt-[3px]">{term}</dt>
       <dd className="min-w-0 text-[14px] leading-relaxed">{children}</dd>
     </div>

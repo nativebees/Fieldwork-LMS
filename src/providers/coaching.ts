@@ -115,7 +115,10 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
       watchOut: 'Three programs at once means you will not know which one helped.',
       sourcedAdvice: [
         { text: 'The sponsor wants to see value before any conversation about seats.', sourceId: 'src-sponsor-note' },
-        { text: 'Packaged workflows may get reused more once they exist. Treat this as a pilot assumption to test.', sourceId: 'src-field-note' },
+        {
+          text: 'Packaged workflows may get reused more once they exist. Treat this as a pilot assumption to test.',
+          sourceId: 'src-field-note',
+        },
       ],
     }),
   },
@@ -160,7 +163,10 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
       nextDecision: `Decide whether ${hypothesis.department} belongs in this conversation at all.`,
       objective: 'Keep the review focused. A healthy-looking team is a reason to ask what works, and nothing more yet.',
       question: `What are the two or three things ${hypothesis.department} has set up in Claude that they would not want to lose?`,
-      successCriteria: [`You do not present ${hypothesis.department} as proof of value.`, 'You ask what the Projects and Skills are used for.'],
+      successCriteria: [
+        `You do not present ${hypothesis.department} as proof of value.`,
+        'You ask what the Projects and Skills are used for.',
+      ],
       watchOut: 'Feature use is not the same as useful work. Do not turn this into a reference story without asking.',
       sourcedAdvice: [],
     }),
@@ -168,7 +174,10 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
       nextDecision: `Decide whether to line up ${hypothesis.department} as a source of peer examples for after the first pilot.`,
       objective: `Sequence the work. ${hypothesis.department} can wait until the pilot has a result to compare against.`,
       question: `Once the first pilot has a result, would someone in ${hypothesis.department} be willing to show how they set up their shared work?`,
-      successCriteria: [`${hypothesis.department} is parked with a reason and a date.`, 'Any peer example is shared with the team’s permission.'],
+      successCriteria: [
+        `${hypothesis.department} is parked with a reason and a date.`,
+        'Any peer example is shared with the team’s permission.',
+      ],
       watchOut: 'Starting a second workstream now splits the sponsor’s attention.',
       sourcedAdvice: [],
     }),

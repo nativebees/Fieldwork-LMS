@@ -179,13 +179,7 @@ export interface ReviewDecision {
 /* Learning program                                                    */
 /* ------------------------------------------------------------------ */
 
-export type BlockKind =
-  | 'explanation'
-  | 'worked-example'
-  | 'guided-practice'
-  | 'decision-check'
-  | 'source-reference'
-  | 'transfer-task';
+export type BlockKind = 'explanation' | 'worked-example' | 'guided-practice' | 'decision-check' | 'source-reference' | 'transfer-task';
 
 export interface LessonBlock {
   id: string;
@@ -194,12 +188,7 @@ export interface LessonBlock {
 }
 
 export type AssessmentTemplateId =
-  | 'context-pack'
-  | 'workflow-sequence'
-  | 'instruction-package'
-  | 'claim-check'
-  | 'approval-gate'
-  | 'transfer-brief';
+  'context-pack' | 'workflow-sequence' | 'instruction-package' | 'claim-check' | 'approval-gate' | 'transfer-brief';
 
 export interface AssessmentBinding {
   templateId: AssessmentTemplateId;
@@ -390,11 +379,7 @@ export interface RehearsalState {
 }
 
 export type SellerCriterionId =
-  | 'observation-vs-assumption'
-  | 'diagnostic-question'
-  | 'intervention-fit'
-  | 'accuracy-and-approval'
-  | 'next-measurement';
+  'observation-vs-assumption' | 'diagnostic-question' | 'intervention-fit' | 'accuracy-and-approval' | 'next-measurement';
 
 export interface SellerCriterionResult {
   id: SellerCriterionId;
@@ -442,6 +427,8 @@ export interface Proposal {
   lessonIds: string[];
   suggestionId?: SuggestionId;
   selectLessonId?: string;
+  /** One log entry per distinct reason, so each change can be traced to why it was made. */
+  logEntries?: Array<{ summary: string; reason: string; lessonIds: string[]; suggestionId?: SuggestionId }>;
 }
 
 export interface FieldChange {

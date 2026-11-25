@@ -76,7 +76,9 @@ export function Modal({ open, onClose, title, eyebrow, variant = 'drawer', width
   if (!open) return null;
 
   return createPortal(
-    <div className={cn('fixed inset-0 z-50 flex', variant === 'drawer' ? 'justify-end' : 'items-end justify-center sm:items-center sm:p-6')}>
+    <div
+      className={cn('fixed inset-0 z-50 flex', variant === 'drawer' ? 'justify-end' : 'items-end justify-center sm:items-center sm:p-6')}
+    >
       <div className="absolute inset-0 animate-fade bg-ink/35" onClick={onClose} aria-hidden="true" />
       <div
         ref={panelRef}
@@ -104,8 +106,13 @@ export function Modal({ open, onClose, title, eyebrow, variant = 'drawer', width
             <X size={16} aria-hidden="true" />
           </IconButton>
         </header>
-        <div className="scroll-quiet min-h-0 flex-1 overflow-y-auto px-5 py-4">{children}</div>
-        {footer && <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-rule bg-surface-soft px-5 py-3">{footer}</footer>}
+        {/* Focusable so keyboard users can scroll long content that has no controls in it. */}
+        <div className="scroll-quiet min-h-0 flex-1 overflow-y-auto px-5 py-4" tabIndex={0} role="group" aria-label={`${title}: content`}>
+          {children}
+        </div>
+        {footer && (
+          <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-rule bg-surface-soft px-5 py-3">{footer}</footer>
+        )}
       </div>
     </div>,
     document.body,

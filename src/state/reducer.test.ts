@@ -14,7 +14,13 @@ const titles = (s: ReturnType<typeof fresh>) => listLessons(s.program).map((l) =
 
 describe('state transitions', () => {
   it('captures the initial recommendation and locks it once the constraint is revealed', () => {
-    let s = run(fresh(), { type: 'decision/record', recommendationId: PRIMARY_RECOMMENDATION_ID, decision: 'accept', choiceId: null, note: '' });
+    let s = run(fresh(), {
+      type: 'decision/record',
+      recommendationId: PRIMARY_RECOMMENDATION_ID,
+      decision: 'accept',
+      choiceId: null,
+      note: '',
+    });
     expect(s.decisions[PRIMARY_RECOMMENDATION_ID].decision).toBe('accept');
     expect(s.decisions[PRIMARY_RECOMMENDATION_ID].sellerProfileId).toBe('ae-new');
 
@@ -26,7 +32,13 @@ describe('state transitions', () => {
     expect(s.constraint).not.toBeNull();
     expect(s.programAtReveal).toEqual(createInitialState().program);
 
-    const after = run(s, { type: 'decision/record', recommendationId: PRIMARY_RECOMMENDATION_ID, decision: 'dismiss', choiceId: null, note: '' });
+    const after = run(s, {
+      type: 'decision/record',
+      recommendationId: PRIMARY_RECOMMENDATION_ID,
+      decision: 'dismiss',
+      choiceId: null,
+      note: '',
+    });
     expect(after.decisions[PRIMARY_RECOMMENDATION_ID].decision).toBe('accept');
   });
 

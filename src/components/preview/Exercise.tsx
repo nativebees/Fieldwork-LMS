@@ -1,5 +1,14 @@
 import { useId, useState } from 'react';
-import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type Announcements, type DragEndEvent } from '@dnd-kit/core';
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type Announcements,
+  type DragEndEvent,
+} from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ChevronDown, ChevronUp, CircleCheck, CircleX, GripVertical, RotateCcw } from 'lucide-react';
@@ -19,8 +28,23 @@ import { Button, IconButton, Tag } from '../ui/primitives';
 /* Parts                                                               */
 /* ------------------------------------------------------------------ */
 
-function SortableStep({ item, index, total, disabled, onMove }: { item: ExerciseOption; index: number; total: number; disabled: boolean; onMove: (delta: -1 | 1) => void }) {
-  const { setNodeRef, setActivatorNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({ id: item.id, disabled });
+function SortableStep({
+  item,
+  index,
+  total,
+  disabled,
+  onMove,
+}: {
+  item: ExerciseOption;
+  index: number;
+  total: number;
+  disabled: boolean;
+  onMove: (delta: -1 | 1) => void;
+}) {
+  const { setNodeRef, setActivatorNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
+    id: item.id,
+    disabled,
+  });
   return (
     <li
       ref={setNodeRef}
@@ -48,10 +72,20 @@ function SortableStep({ item, index, total, disabled, onMove }: { item: Exercise
       </span>
       <span className="min-w-0 flex-1 py-2 text-[14px] leading-snug">{item.label}</span>
       <span className="flex shrink-0 pr-1">
-        <IconButton label={`Move “${item.label}” up`} disabled={disabled || index === 0} onClick={() => onMove(-1)} data-testid={`step-up-${item.id}`}>
+        <IconButton
+          label={`Move “${item.label}” up`}
+          disabled={disabled || index === 0}
+          onClick={() => onMove(-1)}
+          data-testid={`step-up-${item.id}`}
+        >
           <ChevronUp size={15} aria-hidden="true" />
         </IconButton>
-        <IconButton label={`Move “${item.label}” down`} disabled={disabled || index === total - 1} onClick={() => onMove(1)} data-testid={`step-down-${item.id}`}>
+        <IconButton
+          label={`Move “${item.label}” down`}
+          disabled={disabled || index === total - 1}
+          onClick={() => onMove(1)}
+          data-testid={`step-down-${item.id}`}
+        >
           <ChevronDown size={15} aria-hidden="true" />
         </IconButton>
       </span>
@@ -59,7 +93,17 @@ function SortableStep({ item, index, total, disabled, onMove }: { item: Exercise
   );
 }
 
-function OrderPart({ part, value, disabled, onChange }: { part: Extract<ExercisePart, { type: 'order' }>; value: string[]; disabled: boolean; onChange: (next: string[]) => void }) {
+function OrderPart({
+  part,
+  value,
+  disabled,
+  onChange,
+}: {
+  part: Extract<ExercisePart, { type: 'order' }>;
+  value: string[];
+  disabled: boolean;
+  onChange: (next: string[]) => void;
+}) {
   const { announce } = useFeedback();
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -69,9 +113,12 @@ function OrderPart({ part, value, disabled, onChange }: { part: Extract<Exercise
   const label = (id: string) => byId.get(id)?.label ?? id;
 
   const announcements: Announcements = {
-    onDragStart: ({ active }) => `Picked up step: ${label(String(active.id))}. Position ${value.indexOf(String(active.id)) + 1} of ${value.length}.`,
-    onDragOver: ({ active, over }) => (over ? `${label(String(active.id))} is over position ${value.indexOf(String(over.id)) + 1} of ${value.length}.` : ''),
-    onDragEnd: ({ active, over }) => (over ? `${label(String(active.id))} dropped at position ${value.indexOf(String(over.id)) + 1} of ${value.length}.` : ''),
+    onDragStart: ({ active }) =>
+      `Picked up step: ${label(String(active.id))}. Position ${value.indexOf(String(active.id)) + 1} of ${value.length}.`,
+    onDragOver: ({ active, over }) =>
+      over ? `${label(String(active.id))} is over position ${value.indexOf(String(over.id)) + 1} of ${value.length}.` : '',
+    onDragEnd: ({ active, over }) =>
+      over ? `${label(String(active.id))} dropped at position ${value.indexOf(String(over.id)) + 1} of ${value.length}.` : '',
     onDragCancel: ({ active }) => `Move cancelled. ${label(String(active.id))} stays where it was.`,
   };
 
@@ -94,7 +141,16 @@ function OrderPart({ part, value, disabled, onChange }: { part: Extract<Exercise
         <ol className="flex flex-col gap-1.5" data-testid={`part-${part.id}`}>
           {value.map((id, index) => {
             const item = byId.get(id);
-            return item ? <SortableStep key={id} item={item} index={index} total={value.length} disabled={disabled} onMove={(delta) => move(id, delta)} /> : null;
+            return item ? (
+              <SortableStep
+                key={id}
+                item={item}
+                index={index}
+                total={value.length}
+                disabled={disabled}
+                onMove={(delta) => move(id, delta)}
+              />
+            ) : null;
           })}
         </ol>
       </SortableContext>
@@ -214,7 +270,12 @@ function AttemptFeedback({ attempt, hints }: { attempt: PracticeAttempt; hints: 
       </p>
       <ul className="flex flex-col">
         {attempt.results.map((r) => (
-          <li key={r.criterionId} className="flex items-start gap-3 border-t border-rule py-3 first:border-t-0 first:pt-0" data-testid={`result-${r.criterionId}`} data-met={r.met}>
+          <li
+            key={r.criterionId}
+            className="flex items-start gap-3 border-t border-rule py-3 first:border-t-0 first:pt-0"
+            data-testid={`result-${r.criterionId}`}
+            data-met={r.met}
+          >
             {r.met ? (
               <CircleCheck size={18} className="mt-px shrink-0 text-sage-deep" aria-hidden="true" />
             ) : (
@@ -223,7 +284,9 @@ function AttemptFeedback({ attempt, hints }: { attempt: PracticeAttempt; hints: 
             <div className="min-w-0">
               <p className="text-[14px] leading-snug font-semibold">
                 {r.label}
-                <span className={cn('ml-2 text-[12px] font-semibold', r.met ? 'text-sage-deep' : 'text-terracotta-deep')}>{r.met ? 'Demonstrated' : 'Not yet'}</span>
+                <span className={cn('ml-2 text-[12px] font-semibold', r.met ? 'text-sage-deep' : 'text-terracotta-deep')}>
+                  {r.met ? 'Demonstrated' : 'Not yet'}
+                </span>
               </p>
               <p className="mt-0.5 text-[13.5px] leading-relaxed text-ink-2">{r.explanation}</p>
             </div>
@@ -319,9 +382,20 @@ function ScoredExercise({ lesson, progress, onRecord }: Omit<Props, 'onUnscored'
               {part.prompt}
             </legend>
             {part.type === 'order' ? (
-              <OrderPart part={part} value={(draft[part.id] as string[]) ?? part.initialOrder} disabled={disabled} onChange={(next) => setDraft((d) => ({ ...d, [part.id]: next }))} />
+              <OrderPart
+                part={part}
+                value={(draft[part.id] as string[]) ?? part.initialOrder}
+                disabled={disabled}
+                onChange={(next) => setDraft((d) => ({ ...d, [part.id]: next }))}
+              />
             ) : (
-              <ChoicePart part={part} value={draft[part.id]} disabled={disabled} invalid={invalid} onChange={(next) => setDraft((d) => ({ ...d, [part.id]: next }))} />
+              <ChoicePart
+                part={part}
+                value={draft[part.id]}
+                disabled={disabled}
+                invalid={invalid}
+                onChange={(next) => setDraft((d) => ({ ...d, [part.id]: next }))}
+              />
             )}
             {invalid && (
               <p className="text-[12.5px] font-medium text-terracotta-deep" role="alert">
@@ -337,7 +411,9 @@ function ScoredExercise({ lesson, progress, onRecord }: Omit<Props, 'onUnscored'
           <Button variant="primary" size="lg" onClick={check} data-testid="check-work">
             Check my work
           </Button>
-          <p className="text-[12.5px] text-ink-2">Scored against {plural(version.criteria.length, 'criterion', 'criteria')}. You can retry as often as you like.</p>
+          <p className="text-[12.5px] text-ink-2">
+            Scored against {plural(version.criteria.length, 'criterion', 'criteria')}. You can retry as often as you like.
+          </p>
         </div>
       ) : (
         latest && (
@@ -370,7 +446,9 @@ function ScoredExercise({ lesson, progress, onRecord }: Omit<Props, 'onUnscored'
                       {a.results.filter((r) => r.met).length} of {a.results.length} demonstrated
                     </span>
                   )}
-                  {!counted && <Tag tone="outline">{a.scored ? 'Earlier version · not counted toward current criteria' : 'Unscored practice'}</Tag>}
+                  {!counted && (
+                    <Tag tone="outline">{a.scored ? 'Earlier version · not counted toward current criteria' : 'Unscored practice'}</Tag>
+                  )}
                 </li>
               );
             })}

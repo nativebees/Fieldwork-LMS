@@ -1,16 +1,7 @@
 import { getAssessment, rulesIdOf } from '../fixtures/assessments';
 import { SOURCE_BY_ID } from '../fixtures/knowledge';
 import { BLOCK_KIND_LABEL, instantiateTemplate } from '../fixtures/lessons';
-import type {
-  BlockKind,
-  FieldChange,
-  LearningProgram,
-  Lesson,
-  LessonBlock,
-  ProgramChange,
-  ProgramModule,
-  RemovedLesson,
-} from '../types';
+import type { BlockKind, FieldChange, LearningProgram, Lesson, LessonBlock, ProgramChange, ProgramModule, RemovedLesson } from '../types';
 
 /**
  * Pure operations on a learning program. The studio, the learner preview and the
@@ -123,10 +114,7 @@ export function moveLessonByStep(program: LearningProgram, lessonId: string, dir
   return next ? moveLesson(program, lessonId, next.id, 0) : program;
 }
 
-export function removeLesson(
-  program: LearningProgram,
-  lessonId: string,
-): { program: LearningProgram; removed: RemovedLesson } | null {
+export function removeLesson(program: LearningProgram, lessonId: string): { program: LearningProgram; removed: RemovedLesson } | null {
   const loc = locate(program, lessonId);
   if (!loc) return null;
   const lessons = { ...program.lessons };
@@ -254,7 +242,12 @@ export function applyLessonPatch(lesson: Lesson, patch: LessonPatch): Lesson {
       normalizeText(next.practice) === normalizeText(lesson.aligned.practice) &&
       normalizeText(next.evidence) === normalizeText(lesson.aligned.evidence);
     next.assessment = same
-      ? { templateId: lesson.assessment.templateId, version: lesson.assessment.version, status: 'mapped', reviewedAt: lesson.assessment.reviewedAt }
+      ? {
+          templateId: lesson.assessment.templateId,
+          version: lesson.assessment.version,
+          status: 'mapped',
+          reviewedAt: lesson.assessment.reviewedAt,
+        }
       : { templateId: lesson.assessment.templateId, version: lesson.assessment.version, status: 'custom-needs-review' };
   }
   return next;

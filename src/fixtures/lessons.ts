@@ -227,8 +227,7 @@ export const VERIFICATION_VARIANTS: Record<
       'New request: a webinar campaign brief for Meridian Insights. The draft in the practice below contains one claim with no approved source.',
     sourceBlock:
       'Sources for the new brief: the webinar event plan, the Insights product specification and the trial offer sheet in the synthetic source list.',
-    practice:
-      'In the new draft, pick the unsupported claim, choose the evidence that would support it and place campaign-owner approval.',
+    practice: 'In the new draft, pick the unsupported claim, choose the evidence that would support it and place campaign-owner approval.',
     evidence:
       'The unsupported claim is identified in an unfamiliar draft, the evidence is a dated approved source and the campaign owner approves before external sharing.',
     assessment: { templateId: 'transfer-brief', version: 2 },

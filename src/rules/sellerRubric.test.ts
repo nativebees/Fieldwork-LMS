@@ -29,7 +29,11 @@ describe('seller practice rubric', () => {
 
     const revised = withRevisedProgram(talked);
     expect(rubricTotal(score(revised)).points).toBe(10);
-    expect(score(revised).find((r) => r.id === 'accuracy-and-approval')!.evidence.join(' ')).toMatch(/cl\.identify/);
+    expect(
+      score(revised)
+        .find((r) => r.id === 'accuracy-and-approval')!
+        .evidence.join(' '),
+    ).toMatch(/cl\.identify/);
   });
 
   it('proposing that Claude approve claims withholds the approval point even with a revised program', () => {

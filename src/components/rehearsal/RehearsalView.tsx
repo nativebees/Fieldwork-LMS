@@ -30,7 +30,9 @@ function SellerLine({ children }: { children: ReactNode }) {
   return (
     <div className="flex animate-rise flex-col items-end gap-1 pl-6 sm:pl-16">
       <p className="eyebrow">You</p>
-      <div className="rounded-md rounded-tr-none border border-ink bg-ink px-4 py-3 text-[14.5px] leading-relaxed text-canvas">{children}</div>
+      <div className="rounded-md rounded-tr-none border border-ink bg-ink px-4 py-3 text-[14.5px] leading-relaxed text-canvas">
+        {children}
+      </div>
     </div>
   );
 }
@@ -74,7 +76,12 @@ function Chooser({ stepId, options, staleChoice, onConfirm }: ChooserProps) {
   }, [stepId]);
 
   return (
-    <fieldset ref={ref} tabIndex={-1} className="animate-rise rounded-md border border-rule-strong bg-surface-soft p-4 outline-none sm:p-5" data-testid={`step-${stepId}`}>
+    <fieldset
+      ref={ref}
+      tabIndex={-1}
+      className="animate-rise rounded-md border border-rule-strong bg-surface-soft p-4 outline-none sm:p-5"
+      data-testid={`step-${stepId}`}
+    >
       <legend className="float-left mb-3 w-full">
         <span className="eyebrow block">
           Turn {step.turn} · {step.heading}
@@ -82,7 +89,9 @@ function Chooser({ stepId, options, staleChoice, onConfirm }: ChooserProps) {
         <span className="font-display mt-1 block text-[20px]">{step.prompt}</span>
       </legend>
       {staleChoice && (
-        <p className="clear-both mb-3 text-[13px] text-ochre-deep">Your earlier answer belonged to the other seller profile. Choose again for this one.</p>
+        <p className="clear-both mb-3 text-[13px] text-ochre-deep">
+          Your earlier answer belonged to the other seller profile. Choose again for this one.
+        </p>
       )}
       <div className="clear-both flex flex-col gap-2">
         {options.map((option) => {
@@ -92,7 +101,9 @@ function Chooser({ stepId, options, staleChoice, onConfirm }: ChooserProps) {
               key={option.id}
               className={cn(
                 'flex cursor-pointer items-start gap-3 rounded-sm border bg-paper px-3.5 py-3 text-[14px] leading-relaxed transition-[border-color,box-shadow] duration-150',
-                checked ? 'border-terracotta-deep shadow-[inset_3px_0_0_var(--color-terracotta)]' : 'border-rule-strong hover:border-control',
+                checked
+                  ? 'border-terracotta-deep shadow-[inset_3px_0_0_var(--color-terracotta)]'
+                  : 'border-rule-strong hover:border-control',
               )}
             >
               <input
@@ -143,7 +154,11 @@ function RubricRow({ result }: { result: SellerCriterionResult }) {
           <span
             className={cn(
               'tabular mt-px inline-flex h-6 min-w-[38px] items-center justify-center rounded-xs border px-1 text-[12.5px] font-semibold',
-              !scored ? 'border-rule-strong text-ink-2' : result.points === 2 ? 'border-sage bg-sage-wash text-sage-deep' : 'border-rule-strong bg-paper text-ink',
+              !scored
+                ? 'border-rule-strong text-ink-2'
+                : result.points === 2
+                  ? 'border-sage bg-sage-wash text-sage-deep'
+                  : 'border-rule-strong bg-paper text-ink',
             )}
             data-testid={`rubric-points-${result.id}`}
           >
@@ -153,7 +168,11 @@ function RubricRow({ result }: { result: SellerCriterionResult }) {
             <span className="font-semibold">{result.label}</span>
             <span className="sr-only">{scored ? `, ${result.points} of ${result.max} points` : ', not scored yet'}</span>
           </span>
-          <ChevronDown size={15} className="mt-1 shrink-0 text-ink-2 transition-transform duration-150 group-open:rotate-180" aria-hidden="true" />
+          <ChevronDown
+            size={15}
+            className="mt-1 shrink-0 text-ink-2 transition-transform duration-150 group-open:rotate-180"
+            aria-hidden="true"
+          />
         </summary>
         <ul className="flex flex-col gap-1 pb-3 pl-[50px] text-[12.5px] leading-snug text-ink-2">
           {result.evidence.map((line) => (
@@ -176,7 +195,12 @@ export function RehearsalView() {
   const choicesKey = JSON.stringify(state.rehearsal.choices);
 
   const review = useAsyncValue(() => coaching.reviewRehearsal({ seller, rehearsal: state.rehearsal }), [seller.id, choicesKey]);
-  const rubric = scoreSellerRubric({ profileId, rehearsal: state.rehearsal, program: state.program, constraintKnown: state.constraint !== null });
+  const rubric = scoreSellerRubric({
+    profileId,
+    rehearsal: state.rehearsal,
+    program: state.program,
+    constraintKnown: state.constraint !== null,
+  });
   const total = rubricTotal(rubric);
   const suggestions = evaluateSuggestions(state.program, state.dismissedSuggestions);
   const initial = state.decisions[PRIMARY_RECOMMENDATION_ID];
@@ -196,8 +220,8 @@ export function RehearsalView() {
         </div>
         <h1 className="font-display mt-3 text-[34px] sm:text-[44px]">Practise the conversation with {SPONSOR_FIRST_NAME}.</h1>
         <p className="mt-4 max-w-[62ch] text-[16px] leading-relaxed text-ink-2">
-          Two turns. You choose what to say, {SPONSOR_FIRST_NAME} answers from a script and each choice is read against five visible criteria. Nothing
-          here judges your wording.
+          Two turns. You choose what to say, {SPONSOR_FIRST_NAME} answers from a script and each choice is read against five visible
+          criteria. Nothing here judges your wording.
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
           <ProfileSwitch />
@@ -242,7 +266,9 @@ export function RehearsalView() {
                 {option ? (
                   <>
                     <SellerLine>{option.text}</SellerLine>
-                    {feedback && <CoachNote feedback={feedback.feedback} profileNote={feedback.profileNote} role={seller.role.toLowerCase()} />}
+                    {feedback && (
+                      <CoachNote feedback={feedback.feedback} profileNote={feedback.profileNote} role={seller.role.toLowerCase()} />
+                    )}
                     <SponsorLine testId={`reply-${stepId}`}>{option.reply}</SponsorLine>
                   </>
                 ) : (
@@ -264,7 +290,9 @@ export function RehearsalView() {
                     <p id="reveal-title" className="eyebrow text-terracotta-deep">
                       The customer changes the brief
                     </p>
-                    <blockquote className="font-display mt-3 text-[24px] leading-[1.22] sm:text-[28px]">“{CUSTOMER_CONSTRAINT.quote}”</blockquote>
+                    <blockquote className="font-display mt-3 text-[24px] leading-[1.22] sm:text-[28px]">
+                      “{CUSTOMER_CONSTRAINT.quote}”
+                    </blockquote>
                     <p className="meta mt-3">
                       {CUSTOMER_CONSTRAINT.speaker}, {ACCOUNT.sponsor.title} · synthetic sponsor statement
                     </p>
@@ -282,10 +310,17 @@ export function RehearsalView() {
                 {total.points} of {total.max} points so far. The rest depends on the program.
               </h2>
               <p className="mt-2 max-w-[60ch] text-[14px] leading-relaxed text-ink-2">
-                Two of the five criteria read the program itself. They only move when the plan you built reflects what {SPONSOR_FIRST_NAME} told you.
+                Two of the five criteria read the program itself. They only move when the plan you built reflects what {SPONSOR_FIRST_NAME}{' '}
+                told you.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <LinkButton href={hrefFor('studio')} variant="accent" size="lg" iconAfter={<ArrowRight size={15} aria-hidden="true" />} testId="go-studio">
+                <LinkButton
+                  href={hrefFor('studio')}
+                  variant="accent"
+                  size="lg"
+                  iconAfter={<ArrowRight size={15} aria-hidden="true" />}
+                  testId="go-studio"
+                >
                   Revise the program in the studio
                 </LinkButton>
                 <LinkButton href={hrefFor('review')} size="lg">
@@ -334,8 +369,8 @@ export function RehearsalView() {
               ))}
             </ul>
             <p className="mt-2 text-[12px] leading-snug text-ink-2">
-              Scored from structured choices and the state of the program. Performance on a practice task, not an assessment of a person. Open a row
-              to see what it cites.
+              Scored from structured choices and the state of the program. Performance on a practice task, not an assessment of a person.
+              Open a row to see what it cites.
             </p>
           </section>
 
@@ -355,7 +390,9 @@ export function RehearsalView() {
               </div>
               <div>
                 <dt className="font-semibold">Customer constraint</dt>
-                <dd className="mt-0.5 text-ink-2">{state.constraint ? 'Unsupported product claims. Approval stays with the campaign owner.' : 'Not discovered yet.'}</dd>
+                <dd className="mt-0.5 text-ink-2">
+                  {state.constraint ? 'Unsupported product claims. Approval stays with the campaign owner.' : 'Not discovered yet.'}
+                </dd>
               </div>
             </dl>
           </section>
@@ -375,13 +412,22 @@ export function RehearsalView() {
                       {s.title}
                       <span className="text-ink-2">
                         {' '}
-                        · {s.status === 'applied' ? 'in the program' : s.status === 'dismissed' ? 'dismissed' : s.status === 'not-applicable' ? 'not applicable' : 'pending'}
+                        ·{' '}
+                        {s.status === 'applied'
+                          ? 'in the program'
+                          : s.status === 'dismissed'
+                            ? 'dismissed'
+                            : s.status === 'not-applicable'
+                              ? 'not applicable'
+                              : 'pending'}
                       </span>
                     </span>
                   </li>
                 ))}
               </ul>
-              <p className="mt-2 text-[12px] leading-snug text-ink-2">Nothing is applied for you. Preview and accept each change in the studio.</p>
+              <p className="mt-2 text-[12px] leading-snug text-ink-2">
+                Nothing is applied for you. Preview and accept each change in the studio.
+              </p>
             </section>
           )}
         </aside>

@@ -51,6 +51,7 @@ export function StudioView() {
   const { program } = state;
   const isWide = useMediaQuery('(min-width: 1024px)');
   const finePointer = useMediaQuery('(pointer: fine)');
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [templateOverId, setTemplateOverId] = useState<string | null>(null);
@@ -63,7 +64,8 @@ export function StudioView() {
   );
 
   const titleOf = useCallback(
-    (id: string) => (id.startsWith(TEMPLATE_PREFIX) ? TEMPLATE_BY_ID[id.slice(TEMPLATE_PREFIX.length)]?.title : program.lessons[id]?.title) ?? 'Lesson',
+    (id: string) =>
+      (id.startsWith(TEMPLATE_PREFIX) ? TEMPLATE_BY_ID[id.slice(TEMPLATE_PREFIX.length)]?.title : program.lessons[id]?.title) ?? 'Lesson',
     [program],
   );
 
@@ -94,7 +96,9 @@ export function StudioView() {
         const id = String(active.id);
         const loc = previewDrop(program, id, over ? String(over.id) : null);
         if (!loc) return `“${titleOf(id)}” was not added.`;
-        return id.startsWith(TEMPLATE_PREFIX) ? `Added “${titleOf(id)}” at ${positionText(loc)}.` : `“${titleOf(id)}” is now at ${positionText(loc)}.`;
+        return id.startsWith(TEMPLATE_PREFIX)
+          ? `Added “${titleOf(id)}” at ${positionText(loc)}.`
+          : `“${titleOf(id)}” is now at ${positionText(loc)}.`;
       },
       onDragCancel: ({ active }) => `Move cancelled. “${titleOf(String(active.id))}” was left where it was.`,
     }),
@@ -116,7 +120,8 @@ export function StudioView() {
     const result = resolveDrop(program, String(event.active.id), event.over ? String(event.over.id) : null);
     endDrag();
     if (!result) return;
-    if (result.kind === 'add') dispatch({ type: 'program/add', templateId: result.templateId, moduleId: result.moduleId, index: result.index });
+    if (result.kind === 'add')
+      dispatch({ type: 'program/add', templateId: result.templateId, moduleId: result.moduleId, index: result.index });
     else dispatch({ type: 'program/reorder', flat: result.flat });
   };
 
@@ -181,7 +186,9 @@ export function StudioView() {
 
   const lessons = listLessons(program);
   const checks = programChecklist(program);
-  const inspector = <Inspector onPropose={propose} onDuplicate={duplicate} onRemove={remove} onClose={isWide ? undefined : () => setInspectorOpen(false)} />;
+  const inspector = (
+    <Inspector onPropose={propose} onDuplicate={duplicate} onRemove={remove} onClose={isWide ? undefined : () => setInspectorOpen(false)} />
+  );
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 pt-7 pb-16 sm:px-6">
@@ -207,10 +214,16 @@ export function StudioView() {
         {state.constraint ? (
           <ConstraintBanner onPropose={propose} />
         ) : (
-          <p className="flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-rule py-3 text-[13.5px] text-ink-2" data-testid="no-constraint-hint">
+          <p
+            className="flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-rule py-3 text-[13.5px] text-ink-2"
+            data-testid="no-constraint-hint"
+          >
             <MessageSquare size={15} aria-hidden="true" />
             This is your starting plan. You have not heard the customer’s side yet.
-            <a href={hrefFor('rehearsal')} className="font-semibold text-ink underline decoration-rule-strong underline-offset-2 hover:decoration-ink">
+            <a
+              href={hrefFor('rehearsal')}
+              className="font-semibold text-ink underline decoration-rule-strong underline-offset-2 hover:decoration-ink"
+            >
               Rehearse the conversation
             </a>
           </p>
@@ -238,11 +251,23 @@ export function StudioView() {
           </div>
 
           <section aria-label="Learning journey" className="min-w-0">
-            <ul className="mb-5 flex flex-wrap gap-x-5 gap-y-1.5 border-b border-rule pb-3" data-testid="program-checklist" aria-label="Coverage">
+            <ul
+              className="mb-5 flex flex-wrap gap-x-5 gap-y-1.5 border-b border-rule pb-3"
+              data-testid="program-checklist"
+              aria-label="Coverage"
+            >
               {checks.map((c) => (
                 <li key={c.key} data-check={c.key} data-ok={c.ok} data-total={c.total}>
                   <StatusMark
-                    status={c.total === 0 ? 'missing' : c.open.some((o) => o.status === 'missing') ? 'missing' : c.open.length > 0 ? 'review' : 'ok'}
+                    status={
+                      c.total === 0
+                        ? 'missing'
+                        : c.open.some((o) => o.status === 'missing')
+                          ? 'missing'
+                          : c.open.length > 0
+                            ? 'review'
+                            : 'ok'
+                    }
                     label={c.label}
                     note={`${c.ok} of ${c.total}`}
                   />
@@ -278,7 +303,10 @@ export function StudioView() {
             )}
 
             {lessons.length === 0 && (
-              <p className="mb-4 rounded-md border border-rule-strong bg-ochre-wash px-4 py-3 text-[13.5px] text-ochre-deep" data-testid="empty-program">
+              <p
+                className="mb-4 rounded-md border border-rule-strong bg-ochre-wash px-4 py-3 text-[13.5px] text-ochre-deep"
+                data-testid="empty-program"
+              >
                 The program has no lessons. The customer preview will be empty until you add one from the library.
               </p>
             )}
@@ -302,13 +330,16 @@ export function StudioView() {
           </section>
 
           {isWide && (
-            <aside aria-label="Inspector" className="scroll-quiet lg:sticky lg:top-24 lg:max-h-[calc(100vh-7.5rem)] lg:self-start lg:overflow-y-auto lg:pr-1">
+            <aside
+              aria-label="Inspector"
+              className="scroll-quiet lg:sticky lg:top-24 lg:max-h-[calc(100vh-7.5rem)] lg:self-start lg:overflow-y-auto lg:pr-1"
+            >
               {inspector}
             </aside>
           )}
         </div>
 
-        <DragOverlay dropAnimation={{ duration: 160, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' }}>
+        <DragOverlay dropAnimation={reducedMotion ? null : { duration: 160, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' }}>
           {activeId && (
             <div className="flex w-[280px] items-center gap-2 rounded-md border border-terracotta-deep bg-paper py-2.5 pr-3 pl-2 shadow-lift">
               <GripVertical size={15} className="shrink-0 text-ink-2" aria-hidden="true" />
@@ -339,7 +370,14 @@ export function StudioView() {
               inspector
             )}
           </section>
-          <Modal open={inspectorOpen && state.selectedLessonId !== null} onClose={() => setInspectorOpen(false)} title="Edit lesson" eyebrow="Inspector" width="sm" testId="inspector-drawer">
+          <Modal
+            open={inspectorOpen && state.selectedLessonId !== null}
+            onClose={() => setInspectorOpen(false)}
+            title="Edit lesson"
+            eyebrow="Inspector"
+            width="sm"
+            testId="inspector-drawer"
+          >
             {inspector}
           </Modal>
         </>

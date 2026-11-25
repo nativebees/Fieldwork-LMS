@@ -33,7 +33,15 @@ describe('exports reflect the current state', () => {
 
   it('the brief has the customer sections and leaves seller context out', () => {
     const md = buildMarkdownBrief(ctx(revised()));
-    for (const heading of ['## Audience', '## Goal', '## Sequence', '## Source notes', '## Practice', '## Review owner', '## Follow-up (proposed)']) {
+    for (const heading of [
+      '## Audience',
+      '## Goal',
+      '## Sequence',
+      '## Source notes',
+      '## Practice',
+      '## Review owner',
+      '## Follow-up (proposed)',
+    ]) {
       expect(md).toContain(heading);
     }
     expect(md).toContain('## What changed after the adoption review');

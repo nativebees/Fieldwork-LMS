@@ -91,7 +91,16 @@ function LessonInspector({ lesson, onPropose, onDuplicate, onRemove, onClose }: 
       <Group title="Basics">
         <div className="flex flex-col gap-3">
           <Field label="Title">
-            {(p) => <input {...p} type="text" className="field" value={lesson.title} onChange={(e) => patch({ title: e.target.value })} data-testid="field-title" />}
+            {(p) => (
+              <input
+                {...p}
+                type="text"
+                className="field"
+                value={lesson.title}
+                onChange={(e) => patch({ title: e.target.value })}
+                data-testid="field-title"
+              />
+            )}
           </Field>
           <Field
             label="Objective"
@@ -102,13 +111,28 @@ function LessonInspector({ lesson, onPropose, onDuplicate, onRemove, onClose }: 
             }
           >
             {(p) => (
-              <textarea {...p} rows={3} className="field resize-y" value={lesson.objective} onChange={(e) => patch({ objective: e.target.value })} data-testid="field-objective" />
+              <textarea
+                {...p}
+                rows={3}
+                className="field resize-y"
+                value={lesson.objective}
+                onChange={(e) => patch({ objective: e.target.value })}
+                data-testid="field-objective"
+              />
             )}
           </Field>
           {lesson.objectiveReview === 'needs-review' && (
-            <div className="rounded-sm border border-ochre-deep/30 bg-ochre-wash px-3 py-2.5 text-[12.5px] leading-snug text-ochre-deep" data-testid="objective-review">
+            <div
+              className="rounded-sm border border-ochre-deep/30 bg-ochre-wash px-3 py-2.5 text-[12.5px] leading-snug text-ochre-deep"
+              data-testid="objective-review"
+            >
               <p>The objective changed materially. Check that the practice and the evidence still assess it.</p>
-              <Button size="sm" className="mt-2" onClick={() => dispatch({ type: 'objective/aligned', lessonId: lesson.id })} data-testid="objective-aligned">
+              <Button
+                size="sm"
+                className="mt-2"
+                onClick={() => dispatch({ type: 'objective/aligned', lessonId: lesson.id })}
+                data-testid="objective-aligned"
+              >
                 Mark as aligned
               </Button>
             </div>
@@ -161,7 +185,9 @@ function LessonInspector({ lesson, onPropose, onDuplicate, onRemove, onClose }: 
                     className="field resize-y"
                     value={block.body}
                     placeholder="Write this block."
-                    onChange={(e) => dispatch({ type: 'program/updateBlock', lessonId: lesson.id, blockId: block.id, body: e.target.value })}
+                    onChange={(e) =>
+                      dispatch({ type: 'program/updateBlock', lessonId: lesson.id, blockId: block.id, body: e.target.value })
+                    }
                     data-testid={`field-block-${block.kind}`}
                   />
                 )}
@@ -172,7 +198,13 @@ function LessonInspector({ lesson, onPropose, onDuplicate, onRemove, onClose }: 
         <div className="mt-3 flex items-end gap-2">
           <Field label="Add a block" className="flex-1">
             {(p) => (
-              <select {...p} className="field" value={newKind} onChange={(e) => setNewKind(e.target.value as BlockKind)} data-testid="new-block-kind">
+              <select
+                {...p}
+                className="field"
+                value={newKind}
+                onChange={(e) => setNewKind(e.target.value as BlockKind)}
+                data-testid="new-block-kind"
+              >
                 {BLOCK_KINDS.map((kind) => (
                   <option key={kind} value={kind}>
                     {BLOCK_KIND_LABEL[kind]}
@@ -181,7 +213,11 @@ function LessonInspector({ lesson, onPropose, onDuplicate, onRemove, onClose }: 
               </select>
             )}
           </Field>
-          <Button icon={<Plus size={14} aria-hidden="true" />} onClick={() => dispatch({ type: 'program/addBlock', lessonId: lesson.id, kind: newKind })} data-testid="add-block">
+          <Button
+            icon={<Plus size={14} aria-hidden="true" />}
+            onClick={() => dispatch({ type: 'program/addBlock', lessonId: lesson.id, kind: newKind })}
+            data-testid="add-block"
+          >
             Add
           </Button>
         </div>
@@ -191,17 +227,31 @@ function LessonInspector({ lesson, onPropose, onDuplicate, onRemove, onClose }: 
         <div className="flex flex-col gap-3">
           <Field label="Practice" hint="What the learner must do.">
             {(p) => (
-              <textarea {...p} rows={3} className="field resize-y" value={lesson.practice} onChange={(e) => patch({ practice: e.target.value })} data-testid="field-practice" />
+              <textarea
+                {...p}
+                rows={3}
+                className="field resize-y"
+                value={lesson.practice}
+                onChange={(e) => patch({ practice: e.target.value })}
+                data-testid="field-practice"
+              />
             )}
           </Field>
           <Field label="Evidence" hint="What shows it was done.">
             {(p) => (
-              <textarea {...p} rows={3} className="field resize-y" value={lesson.evidence} onChange={(e) => patch({ evidence: e.target.value })} data-testid="field-evidence" />
+              <textarea
+                {...p}
+                rows={3}
+                className="field resize-y"
+                value={lesson.evidence}
+                onChange={(e) => patch({ evidence: e.target.value })}
+                data-testid="field-evidence"
+              />
             )}
           </Field>
           <p className="text-[11.5px] leading-snug text-ink-2">
-            These two fields are what the typed assessment scores. Editing them freely marks the lesson as custom until the scoring mapping is
-            reviewed.
+            These two fields are what the typed assessment scores. Editing them freely marks the lesson as custom until the scoring mapping
+            is reviewed.
           </p>
         </div>
       </Group>
@@ -222,16 +272,27 @@ function LessonInspector({ lesson, onPropose, onDuplicate, onRemove, onClose }: 
           {rulesIdOf(lesson.assessment)} · {assessment.title}
         </p>
         {custom ? (
-          <div className="mt-2.5 rounded-sm border border-ochre-deep/30 bg-ochre-wash px-3 py-2.5 text-[12.5px] leading-snug text-ochre-deep" data-testid="assessment-review">
+          <div
+            className="mt-2.5 rounded-sm border border-ochre-deep/30 bg-ochre-wash px-3 py-2.5 text-[12.5px] leading-snug text-ochre-deep"
+            data-testid="assessment-review"
+          >
             <p>
-              The requirement text no longer matches what these rules were written for. Learners can still do the practice, but nothing is scored
-              and no criterion is recorded.
+              The requirement text no longer matches what these rules were written for. Learners can still do the practice, but nothing is
+              scored and no criterion is recorded.
             </p>
             <div className="mt-2.5 flex flex-wrap gap-2">
-              <Button size="sm" onClick={() => dispatch({ type: 'assessment/resolve', lessonId: lesson.id, mode: 'restore' })} data-testid="assessment-restore">
+              <Button
+                size="sm"
+                onClick={() => dispatch({ type: 'assessment/resolve', lessonId: lesson.id, mode: 'restore' })}
+                data-testid="assessment-restore"
+              >
                 Restore aligned text
               </Button>
-              <Button size="sm" onClick={() => dispatch({ type: 'assessment/resolve', lessonId: lesson.id, mode: 'confirm' })} data-testid="assessment-confirm">
+              <Button
+                size="sm"
+                onClick={() => dispatch({ type: 'assessment/resolve', lessonId: lesson.id, mode: 'confirm' })}
+                data-testid="assessment-confirm"
+              >
                 I reviewed it. The mapping holds
               </Button>
             </div>
@@ -256,7 +317,9 @@ function LessonInspector({ lesson, onPropose, onDuplicate, onRemove, onClose }: 
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-[11.5px] leading-snug text-ink-2">Derived from the fields above. It shows what is present, not how good it is.</p>
+        <p className="mt-2 text-[11.5px] leading-snug text-ink-2">
+          Derived from the fields above. It shows what is present, not how good it is.
+        </p>
       </Group>
 
       {lesson.sourceIds.length > 0 && (
@@ -295,10 +358,21 @@ function LessonInspector({ lesson, onPropose, onDuplicate, onRemove, onClose }: 
 
       <Group title="Lesson actions">
         <div className="flex flex-wrap gap-2">
-          <Button size="sm" icon={<Copy size={13} aria-hidden="true" />} onClick={() => onDuplicate(lesson.id)} data-testid="inspector-duplicate">
+          <Button
+            size="sm"
+            icon={<Copy size={13} aria-hidden="true" />}
+            onClick={() => onDuplicate(lesson.id)}
+            data-testid="inspector-duplicate"
+          >
             Duplicate
           </Button>
-          <Button size="sm" variant="quiet-danger" icon={<Trash2 size={13} aria-hidden="true" />} onClick={() => onRemove(lesson.id)} data-testid="inspector-remove">
+          <Button
+            size="sm"
+            variant="quiet-danger"
+            icon={<Trash2 size={13} aria-hidden="true" />}
+            onClick={() => onRemove(lesson.id)}
+            data-testid="inspector-remove"
+          >
             Remove
           </Button>
         </div>
@@ -315,7 +389,8 @@ function ProgramInspector({ onPropose }: { onPropose: (result: ProposalResult) =
   const { state, dispatch } = useStore();
   const { program } = state;
   const checks = programChecklist(program);
-  const update = (patch: { title?: string; audience?: string; goal?: string; reviewOwner?: string }) => dispatch({ type: 'program/updateMeta', patch });
+  const update = (patch: { title?: string; audience?: string; goal?: string; reviewOwner?: string }) =>
+    dispatch({ type: 'program/updateMeta', patch });
 
   return (
     <div data-testid="inspector-program">
@@ -327,16 +402,50 @@ function ProgramInspector({ onPropose }: { onPropose: (result: ProposalResult) =
       <Group title="Customer brief">
         <div className="flex flex-col gap-3">
           <Field label="Program title">
-            {(p) => <input {...p} type="text" className="field" value={program.title} onChange={(e) => update({ title: e.target.value })} data-testid="field-program-title" />}
+            {(p) => (
+              <input
+                {...p}
+                type="text"
+                className="field"
+                value={program.title}
+                onChange={(e) => update({ title: e.target.value })}
+                data-testid="field-program-title"
+              />
+            )}
           </Field>
           <Field label="Audience">
-            {(p) => <textarea {...p} rows={2} className="field resize-y" value={program.audience} onChange={(e) => update({ audience: e.target.value })} />}
+            {(p) => (
+              <textarea
+                {...p}
+                rows={2}
+                className="field resize-y"
+                value={program.audience}
+                onChange={(e) => update({ audience: e.target.value })}
+              />
+            )}
           </Field>
           <Field label="Goal">
-            {(p) => <textarea {...p} rows={3} className="field resize-y" value={program.goal} onChange={(e) => update({ goal: e.target.value })} data-testid="field-program-goal" />}
+            {(p) => (
+              <textarea
+                {...p}
+                rows={3}
+                className="field resize-y"
+                value={program.goal}
+                onChange={(e) => update({ goal: e.target.value })}
+                data-testid="field-program-goal"
+              />
+            )}
           </Field>
           <Field label="Review owner" hint="Who approves the work this program produces.">
-            {(p) => <input {...p} type="text" className="field" value={program.reviewOwner} onChange={(e) => update({ reviewOwner: e.target.value })} />}
+            {(p) => (
+              <input
+                {...p}
+                type="text"
+                className="field"
+                value={program.reviewOwner}
+                onChange={(e) => update({ reviewOwner: e.target.value })}
+              />
+            )}
           </Field>
         </div>
       </Group>

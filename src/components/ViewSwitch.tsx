@@ -9,7 +9,11 @@ export function ViewSwitch({ active }: { active: 'studio' | 'preview' }) {
     { id: 'preview' as const, label: 'Customer Preview', icon: <Eye size={14} aria-hidden="true" /> },
   ];
   return (
-    <nav aria-label="Program view" className="inline-flex rounded-md border border-rule-strong bg-surface p-[3px]" data-testid="view-switch">
+    <nav
+      aria-label="Program view"
+      className="inline-flex rounded-md border border-rule-strong bg-surface p-[3px]"
+      data-testid="view-switch"
+    >
       {items.map((item) => (
         <a
           key={item.id}

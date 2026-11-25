@@ -224,23 +224,19 @@ export function reducer(state: AppState, action: Action, at: string): AppState {
           : state.selectedLessonId && program.lessons[state.selectedLessonId]
             ? state.selectedLessonId
             : null;
+      const entries = proposal.logEntries ?? [
+        { summary: proposal.title, reason: proposal.reason, lessonIds: proposal.lessonIds, suggestionId: proposal.suggestionId },
+      ];
+      const firstId = state.counter + proposal.idsUsed;
       const next: AppState = {
         ...state,
         program,
         selectedLessonId: selected,
         lastRemoved: null,
-        counter: state.counter + proposal.idsUsed + 1,
+        counter: firstId + entries.length,
         revisionLog: [
           ...state.revisionLog,
-          {
-            id: `rev-${state.counter + proposal.idsUsed}`,
-            at,
-            kind: proposal.kind,
-            summary: proposal.title,
-            reason: proposal.reason,
-            lessonIds: proposal.lessonIds,
-            suggestionId: proposal.suggestionId,
-          },
+          ...entries.map((entry, i) => ({ id: `rev-${firstId + i}`, at, kind: proposal.kind, ...entry })),
         ],
       };
       return logEvent(next, at, 'proposal-accepted', proposal.id);

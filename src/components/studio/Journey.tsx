@@ -11,7 +11,6 @@ import type { LearningProgram, LessonTemplate, ProgramModule } from '../../types
 import { IconButton, Tag } from '../ui/primitives';
 import { EMPTY_PREFIX, END_ZONE_ID, TEMPLATE_PREFIX } from './dropTarget';
 
-
 /* ------------------------------------------------------------------ */
 /* Lesson library                                                      */
 /* ------------------------------------------------------------------ */
@@ -24,7 +23,10 @@ interface PaletteItemProps {
 }
 
 function PaletteItem({ template, finePointer, addLabel, onAdd }: PaletteItemProps) {
-  const { setNodeRef, listeners, isDragging } = useDraggable({ id: `${TEMPLATE_PREFIX}${template.id}`, data: { type: 'template', templateId: template.id } });
+  const { setNodeRef, listeners, isDragging } = useDraggable({
+    id: `${TEMPLATE_PREFIX}${template.id}`,
+    data: { type: 'template', templateId: template.id },
+  });
   // Pointer drag only. Keyboard users add with the button, which is announced.
   const pointer = { onPointerDown: listeners?.onPointerDown as PointerEventHandler | undefined };
   return (
@@ -80,7 +82,9 @@ export function Palette({ templates, finePointer, addTargetLabel, onAdd }: Palet
         </h2>
         <span className="meta text-[11px]">{templates.length} templates</span>
       </div>
-      <p className="mt-2 mb-3 text-[12px] leading-snug text-ink-2">Drag a lesson into the journey, or use the plus button. {addTargetLabel}</p>
+      <p className="mt-2 mb-3 text-[12px] leading-snug text-ink-2">
+        Drag a lesson into the journey, or use the plus button. {addTargetLabel}
+      </p>
       <ul className="scroll-quiet -mx-4 flex gap-2 overflow-x-auto px-4 pb-2 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
         {templates.map((template) => (
           <PaletteItem
@@ -102,7 +106,13 @@ export function Palette({ templates, finePointer, addTargetLabel, onAdd }: Palet
 
 function DropLine({ show }: { show: boolean }) {
   return (
-    <div aria-hidden="true" className={cn('pointer-events-none absolute inset-x-0 -top-[7px] h-[3px] rounded-full bg-terracotta transition-opacity duration-100', show ? 'opacity-100' : 'opacity-0')} />
+    <div
+      aria-hidden="true"
+      className={cn(
+        'pointer-events-none absolute inset-x-0 -top-[7px] h-[3px] rounded-full bg-terracotta transition-opacity duration-100',
+        show ? 'opacity-100' : 'opacity-0',
+      )}
+    />
   );
 }
 
@@ -122,10 +132,25 @@ function ModuleHeader({ module, program, index }: { module: ProgramModule; progr
 }
 
 /** A later module's header lives inside the sortable list, so dragging past it moves a lesson between modules. */
-function SortableDivider({ module, program, index, dropHint }: { module: ProgramModule; program: LearningProgram; index: number; dropHint: boolean }) {
+function SortableDivider({
+  module,
+  program,
+  index,
+  dropHint,
+}: {
+  module: ProgramModule;
+  program: LearningProgram;
+  index: number;
+  dropHint: boolean;
+}) {
   const { setNodeRef, transform, transition } = useSortable({ id: `${DIVIDER_PREFIX}${module.id}`, disabled: { draggable: true } });
   return (
-    <li ref={setNodeRef} style={{ transform: CSS.Translate.toString(transform), transition }} className="relative pt-6" data-testid={`module-${module.id}`}>
+    <li
+      ref={setNodeRef}
+      style={{ transform: CSS.Translate.toString(transform), transition }}
+      className="relative pt-6"
+      data-testid={`module-${module.id}`}
+    >
       <DropLine show={dropHint} />
       <ModuleHeader module={module} program={program} index={index} />
     </li>
@@ -140,7 +165,11 @@ function EmptyModule({ moduleId, active }: { moduleId: string; active: boolean }
       data-testid={`empty-${moduleId}`}
       className={cn(
         'rounded-md border border-dashed px-4 py-5 text-center text-[13px] transition-colors duration-150',
-        isOver ? 'border-terracotta-deep bg-terracotta-wash text-terracotta-deep' : active ? 'border-control text-ink-2' : 'border-rule-strong text-ink-2',
+        isOver
+          ? 'border-terracotta-deep bg-terracotta-wash text-terracotta-deep'
+          : active
+            ? 'border-control text-ink-2'
+            : 'border-rule-strong text-ink-2',
       )}
     >
       No lessons in this module yet. Drag one here, or select nothing and use the plus button in the library.
@@ -186,7 +215,9 @@ function LessonCard({ loc, selected, finePointer, dropHint, showEdit, onSelect, 
         onClick={onSelect}
         className={cn(
           'group flex items-stretch rounded-md border bg-paper transition-[border-color,box-shadow,background-color] duration-150',
-          selected ? 'border-terracotta-deep shadow-[inset_3px_0_0_var(--color-terracotta)]' : 'border-rule-strong hover:border-control hover:shadow-paper',
+          selected
+            ? 'border-terracotta-deep shadow-[inset_3px_0_0_var(--color-terracotta)]'
+            : 'border-rule-strong hover:border-control hover:shadow-paper',
         )}
       >
         <button
@@ -203,75 +234,85 @@ function LessonCard({ loc, selected, finePointer, dropHint, showEdit, onSelect, 
         </button>
 
         <div className="flex min-w-0 flex-1 flex-col sm:flex-row sm:items-stretch">
-        <div className="min-w-0 flex-1 py-3 pr-2">
-          <div className="flex items-baseline gap-2.5">
-            <span className="meta tabular text-[11.5px]" aria-hidden="true">
-              {String(position).padStart(2, '0')}
-            </span>
-            <button
-              type="button"
-              aria-pressed={selected}
-              onClick={(event) => {
-                event.stopPropagation();
-                onSelect();
-              }}
-              data-testid={`select-${lesson.id}`}
-              className="font-display min-w-0 text-left text-[17.5px] leading-snug hover:underline hover:decoration-rule-strong hover:underline-offset-4"
-            >
-              {lesson.title || 'Untitled lesson'}
-            </button>
+          <div className="min-w-0 flex-1 py-3 pr-2">
+            <div className="flex items-baseline gap-2.5">
+              <span className="meta tabular text-[11.5px]" aria-hidden="true">
+                {String(position).padStart(2, '0')}
+              </span>
+              <button
+                type="button"
+                aria-pressed={selected}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onSelect();
+                }}
+                data-testid={`select-${lesson.id}`}
+                className="font-display min-w-0 text-left text-[17.5px] leading-snug hover:underline hover:decoration-rule-strong hover:underline-offset-4"
+              >
+                {lesson.title || 'Untitled lesson'}
+              </button>
+            </div>
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 pl-[30px]">
+              <span className="meta tabular">{lesson.durationMin} min</span>
+              <span className="meta" aria-hidden="true">
+                ·
+              </span>
+              <span className="meta" data-testid={`rules-${lesson.id}`}>
+                {rulesIdOf(lesson.assessment)}
+              </span>
+              {lesson.revisedFor === 'customer-constraint' && (
+                <Tag tone="terracotta" title="Changed because of what the customer said">
+                  Revised · customer constraint
+                </Tag>
+              )}
+              {lesson.assessment.status === 'custom-needs-review' && (
+                <Tag tone="ochre">
+                  <CircleAlert size={11} aria-hidden="true" />
+                  Custom · assessment needs review
+                </Tag>
+              )}
+              {lesson.objectiveReview === 'needs-review' && <Tag tone="ochre">Objective changed · check alignment</Tag>}
+              {sourceReview && <Tag tone="ochre">Source needs review</Tag>}
+              {missing.map((m) => (
+                <Tag key={m.key} tone="terracotta">
+                  Missing {m.label.toLowerCase()}
+                </Tag>
+              ))}
+            </div>
           </div>
-          <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 pl-[30px]">
-            <span className="meta tabular">{lesson.durationMin} min</span>
-            <span className="meta" aria-hidden="true">
-              ·
-            </span>
-            <span className="meta" data-testid={`rules-${lesson.id}`}>
-              {rulesIdOf(lesson.assessment)}
-            </span>
-            {lesson.revisedFor === 'customer-constraint' && (
-              <Tag tone="terracotta" title="Changed because of what the customer said">
-                Revised · customer constraint
-              </Tag>
-            )}
-            {lesson.assessment.status === 'custom-needs-review' && (
-              <Tag tone="ochre">
-                <CircleAlert size={11} aria-hidden="true" />
-                Custom · assessment needs review
-              </Tag>
-            )}
-            {lesson.objectiveReview === 'needs-review' && <Tag tone="ochre">Objective changed · check alignment</Tag>}
-            {sourceReview && <Tag tone="ochre">Source needs review</Tag>}
-            {missing.map((m) => (
-              <Tag key={m.key} tone="terracotta">
-                Missing {m.label.toLowerCase()}
-              </Tag>
-            ))}
-          </div>
-        </div>
 
-        <div
-          className="flex shrink-0 items-center justify-end gap-0.5 border-t border-rule py-1 pr-2 sm:border-t-0 sm:py-2"
-          onClick={(event) => event.stopPropagation()}
-        >
-          {showEdit && (
-            <IconButton label={`Edit “${lesson.title}”`} onClick={onEdit} data-testid={`edit-${lesson.id}`}>
-              <Pencil size={14} aria-hidden="true" />
+          <div
+            className="flex shrink-0 items-center justify-end gap-0.5 border-t border-rule py-1 pr-2 sm:border-t-0 sm:py-2"
+            onClick={(event) => event.stopPropagation()}
+          >
+            {showEdit && (
+              <IconButton label={`Edit “${lesson.title}”`} onClick={onEdit} data-testid={`edit-${lesson.id}`}>
+                <Pencil size={14} aria-hidden="true" />
+              </IconButton>
+            )}
+            <IconButton
+              label={`Move “${lesson.title}” up`}
+              onClick={() => onStep(-1)}
+              disabled={position === 1}
+              data-testid={`up-${lesson.id}`}
+            >
+              <ChevronUp size={15} aria-hidden="true" />
             </IconButton>
-          )}
-          <IconButton label={`Move “${lesson.title}” up`} onClick={() => onStep(-1)} disabled={position === 1} data-testid={`up-${lesson.id}`}>
-            <ChevronUp size={15} aria-hidden="true" />
-          </IconButton>
-          <IconButton label={`Move “${lesson.title}” down`} onClick={() => onStep(1)} disabled={position === total} data-testid={`down-${lesson.id}`}>
-            <ChevronDown size={15} aria-hidden="true" />
-          </IconButton>
-          <IconButton label={`Duplicate “${lesson.title}”`} onClick={onDuplicate} data-testid={`duplicate-${lesson.id}`}>
-            <Copy size={14} aria-hidden="true" />
-          </IconButton>
-          <IconButton label={`Remove “${lesson.title}”`} tone="danger" onClick={onRemove} data-testid={`remove-${lesson.id}`}>
-            <Trash2 size={14} aria-hidden="true" />
-          </IconButton>
-        </div>
+            <IconButton
+              label={`Move “${lesson.title}” down`}
+              onClick={() => onStep(1)}
+              disabled={position === total}
+              data-testid={`down-${lesson.id}`}
+            >
+              <ChevronDown size={15} aria-hidden="true" />
+            </IconButton>
+            <IconButton label={`Duplicate “${lesson.title}”`} onClick={onDuplicate} data-testid={`duplicate-${lesson.id}`}>
+              <Copy size={14} aria-hidden="true" />
+            </IconButton>
+            <IconButton label={`Remove “${lesson.title}”`} tone="danger" onClick={onRemove} data-testid={`remove-${lesson.id}`}>
+              <Trash2 size={14} aria-hidden="true" />
+            </IconButton>
+          </div>
         </div>
       </div>
     </li>
@@ -358,16 +399,18 @@ export function Journey({
       <SortableContext items={flat} strategy={verticalListSortingStrategy}>
         <ol className="mt-3 flex flex-col gap-2.5">
           {renderLessons(first)}
-          {program.modules.slice(1).map((module, i) => [
-            <SortableDivider
-              key={`divider-${module.id}`}
-              module={module}
-              program={program}
-              index={i + 1}
-              dropHint={templateOverId === `${DIVIDER_PREFIX}${module.id}`}
-            />,
-            renderLessons(module),
-          ])}
+          {program.modules
+            .slice(1)
+            .map((module, i) => [
+              <SortableDivider
+                key={`divider-${module.id}`}
+                module={module}
+                program={program}
+                index={i + 1}
+                dropHint={templateOverId === `${DIVIDER_PREFIX}${module.id}`}
+              />,
+              renderLessons(module),
+            ])}
         </ol>
       </SortableContext>
       <EndZone visible={draggingTemplate} />

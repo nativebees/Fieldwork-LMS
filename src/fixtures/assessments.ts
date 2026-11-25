@@ -268,11 +268,7 @@ export const ASSESSMENT_VERSIONS: AssessmentVersion[] = [
         'Relay connects to 85 business tools at launch.',
         'Pricing starts at the Team tier.',
       ],
-      sources: [
-        'Relay 3.0 release notes, dated 2026-10-28',
-        'Integration catalog, dated 2026-10-30',
-        'Pricing sheet, dated 2026-11-02',
-      ],
+      sources: ['Relay 3.0 release notes, dated 2026-10-28', 'Integration catalog, dated 2026-10-30', 'Pricing sheet, dated 2026-11-02'],
     },
     parts: [
       {
@@ -573,9 +569,7 @@ export const ASSESSMENT_VERSIONS: AssessmentVersion[] = [
   },
 ];
 
-export const ASSESSMENT_BY_RULES_ID: Record<string, AssessmentVersion> = Object.fromEntries(
-  ASSESSMENT_VERSIONS.map((v) => [v.rulesId, v]),
-);
+export const ASSESSMENT_BY_RULES_ID: Record<string, AssessmentVersion> = Object.fromEntries(ASSESSMENT_VERSIONS.map((v) => [v.rulesId, v]));
 
 export function rulesIdOf(binding: Pick<AssessmentBinding, 'templateId' | 'version'>): string {
   return `${binding.templateId}@${binding.version}`;
@@ -588,7 +582,13 @@ export function getAssessment(binding: Pick<AssessmentBinding, 'templateId' | 'v
 }
 
 /** Criterion ids that count as handling source accuracy. */
-export const SOURCE_ACCURACY_CRITERIA = ['cl.identify', 'cl.evidence', 'tr.identify-claim', 'tr.select-evidence', 'wf.claims-before-approval'];
+export const SOURCE_ACCURACY_CRITERIA = [
+  'cl.identify',
+  'cl.evidence',
+  'tr.identify-claim',
+  'tr.select-evidence',
+  'wf.claims-before-approval',
+];
 
 /** Criterion ids that count as keeping human approval before sharing. */
 export const HUMAN_APPROVAL_CRITERIA = ['wf.approval-before-share', 'ap.owner-before-share', 'tr.approval-before-share'];

@@ -1,10 +1,11 @@
 import { ArrowRight, Check, CircleDashed, Undo2 } from 'lucide-react';
 import { CUSTOMER_CONSTRAINT } from '../../fixtures/account';
+import { cn } from '../../lib/cn';
 import { hrefFor } from '../../lib/router';
 import { explainChanges } from '../../rules/export';
 import { SUGGESTION_ORDER, evaluateSuggestions, proposeSuggestions, type ProposalResult } from '../../rules/tailoring';
 import { useStore } from '../../state/store';
-import { ChangeList } from '../ChangeList';
+import { ChangeGroups } from '../ChangeList';
 import { Button, LinkButton, Tag } from '../ui/primitives';
 
 /**
@@ -54,7 +55,10 @@ export function ConstraintBanner({ onPropose }: { onPropose: (result: ProposalRe
             {suggestions.map((s) => (
               <li
                 key={s.id}
-                className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1.5 border-t border-rule py-2.5 first:border-t-0"
+                className={cn(
+                  'flex flex-wrap items-start justify-between gap-x-3 gap-y-1.5 border-t border-rule first:border-t-0',
+                  s.status === 'applied' ? 'py-1.5' : 'py-2.5',
+                )}
                 data-testid={`suggestion-${s.id}`}
                 data-status={s.status}
               >
@@ -66,7 +70,8 @@ export function ConstraintBanner({ onPropose }: { onPropose: (result: ProposalRe
                   )}
                   <div className="min-w-0">
                     <p className="text-[13.5px] leading-snug font-semibold">{s.title}</p>
-                    <p className="mt-0.5 text-[12.5px] leading-snug text-ink-2">{s.why}</p>
+                    {/* Once a change is in the program its reason lives in "What changed and why" below. */}
+                    {s.status !== 'applied' && <p className="mt-0.5 text-[12.5px] leading-snug text-ink-2">{s.why}</p>}
                   </div>
                 </div>
                 <div className="flex shrink-0 items-center gap-1.5">
@@ -81,7 +86,12 @@ export function ConstraintBanner({ onPropose }: { onPropose: (result: ProposalRe
                       >
                         Preview
                       </Button>
-                      <Button size="sm" variant="ghost" data-testid={`dismiss-${s.id}`} onClick={() => dispatch({ type: 'suggestion/dismiss', id: s.id })}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        data-testid={`dismiss-${s.id}`}
+                        onClick={() => dispatch({ type: 'suggestion/dismiss', id: s.id })}
+                      >
                         Dismiss
                       </Button>
                     </>
@@ -116,10 +126,12 @@ export function ConstraintBanner({ onPropose }: { onPropose: (result: ProposalRe
               </span>
             </span>
             <span className="text-[12.5px] text-ink-2 underline decoration-rule-strong underline-offset-2 group-open:hidden">Show</span>
-            <span className="hidden text-[12.5px] text-ink-2 underline decoration-rule-strong underline-offset-2 group-open:inline">Hide</span>
+            <span className="hidden text-[12.5px] text-ink-2 underline decoration-rule-strong underline-offset-2 group-open:inline">
+              Hide
+            </span>
           </summary>
           <div className="px-5 pt-1 pb-4 sm:px-6">
-            <ChangeList changes={changes.map((c) => c.change)} reasons={changes} testId="what-changed-list" />
+            <ChangeGroups items={changes} testId="what-changed-list" />
             <div className="mt-3 flex justify-end">
               <LinkButton href={hrefFor('review')} size="sm" variant="ghost" iconAfter={<ArrowRight size={13} aria-hidden="true" />}>
                 Full review

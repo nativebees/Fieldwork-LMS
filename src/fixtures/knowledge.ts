@@ -39,8 +39,7 @@ export const SOURCES: SourceReference[] = [
     kind: 'synthetic-sponsor',
     title: 'Sponsor statement in the adoption review',
     publisher: 'Synthetic sponsor context',
-    summary:
-      'The team repeats campaign briefs. The sticking point is unsupported product claims. Approval stays with the campaign owner.',
+    summary: 'The team repeats campaign briefs. The sticking point is unsupported product claims. Approval stays with the campaign owner.',
     checkedOn: KNOWLEDGE_CHECKED_ON,
     review: 'reviewed',
     reviewNote: 'Synthetic. Scripted for the seller rehearsal.',

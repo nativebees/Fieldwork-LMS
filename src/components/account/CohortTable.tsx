@@ -92,8 +92,7 @@ interface Props {
 }
 
 export function CohortTable({ cohorts, observations, priorityCohortId }: Props) {
-  const find = (cohort: Cohort, suffix: string) =>
-    observations.find((o) => o.id === `obs-${cohort.department.toLowerCase()}-${suffix}`);
+  const find = (cohort: Cohort, suffix: string) => observations.find((o) => o.id === `obs-${cohort.department.toLowerCase()}-${suffix}`);
   const present = new Set(cohorts.flatMap((c) => c.segments.filter((s) => s.count > 0).map((s) => s.key)));
   const legend = (Object.keys(SEGMENT_LABEL) as SegmentKey[]).filter((k) => present.has(k));
 
@@ -120,18 +119,24 @@ export function CohortTable({ cohorts, observations, priorityCohortId }: Props) 
         </colgroup>
         <thead>
           <tr className="border-b border-rule-strong">
-            {['Department', 'Seats active', 'Split of assigned seats', 'Frequent chat, no reuse', 'Project use', 'Skill use'].map((h, i) => (
-              <th key={h} scope="col" className={cn('eyebrow py-2 align-bottom font-semibold', i < 5 && 'pr-4')}>
-                {h}
-              </th>
-            ))}
+            {['Department', 'Seats active', 'Split of assigned seats', 'Frequent chat, no reuse', 'Project use', 'Skill use'].map(
+              (h, i) => (
+                <th key={h} scope="col" className={cn('eyebrow py-2 align-bottom font-semibold', i < 5 && 'pr-4')}>
+                  {h}
+                </th>
+              ),
+            )}
           </tr>
         </thead>
         <tbody>
           {cohorts.map((cohort) => {
             const priority = cohort.id === priorityCohortId;
             return (
-              <tr key={cohort.id} className="border-b border-rule align-middle" data-testid={`cohort-row-${cohort.department.toLowerCase()}`}>
+              <tr
+                key={cohort.id}
+                className="border-b border-rule align-middle"
+                data-testid={`cohort-row-${cohort.department.toLowerCase()}`}
+              >
                 <th scope="row" className="py-2.5 pr-4 font-semibold">
                   <span className="flex items-center gap-2">
                     <span aria-hidden="true" className={cn('h-4 w-[3px] rounded-full', priority ? 'bg-terracotta' : 'bg-transparent')} />
@@ -166,7 +171,10 @@ export function CohortTable({ cohorts, observations, priorityCohortId }: Props) 
           <li key={cohort.id} className="border-t border-rule py-3 first:border-t-0">
             <div className="flex items-baseline justify-between gap-3">
               <p className="flex items-center gap-2 font-semibold">
-                <span aria-hidden="true" className={cn('h-4 w-[3px] rounded-full', cohort.id === priorityCohortId ? 'bg-terracotta' : 'bg-transparent')} />
+                <span
+                  aria-hidden="true"
+                  className={cn('h-4 w-[3px] rounded-full', cohort.id === priorityCohortId ? 'bg-terracotta' : 'bg-transparent')}
+                />
                 {cohort.department}
               </p>
               <p className="tabular text-[13px]">

@@ -87,7 +87,9 @@ function Body({ change }: { change: ProgramChange }) {
                 {f.before && f.after ? (
                   <BeforeAfter before={f.before} after={f.after} />
                 ) : (
-                  <p className="mt-0.5 text-[13px] leading-snug">{f.after || <span className="text-ink-2 line-through decoration-rule-strong">{f.before}</span>}</p>
+                  <p className="mt-0.5 text-[13px] leading-snug">
+                    {f.after || <span className="text-ink-2 line-through decoration-rule-strong">{f.before}</span>}
+                  </p>
                 )}
               </li>
             ))}
@@ -150,7 +152,11 @@ export function ChangeList({ changes, reasons, testId }: { changes: ProgramChang
       {changes.map((change, i) => {
         const reason = reasons?.[i];
         return (
-          <li key={i} className="grid grid-cols-[92px_1fr] gap-x-3 border-t border-rule py-3 first:border-t-0 first:pt-0" data-change-type={change.type}>
+          <li
+            key={i}
+            className="grid grid-cols-[92px_1fr] gap-x-3 border-t border-rule py-3 first:border-t-0 first:pt-0"
+            data-change-type={change.type}
+          >
             <p className="eyebrow flex items-start gap-1.5 pt-[2px]">
               <span className="mt-px">{ICON[change.type]}</span>
               {LABEL[change.type]}
@@ -171,5 +177,167 @@ export function ChangeList({ changes, reasons, testId }: { changes: ProgramChang
         );
       })}
     </ul>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Compact comparison: what changed, grouped by why                    */
+/* ------------------------------------------------------------------ */
+
+function Wording({ change, label = 'Show wording' }: { change: ProgramChange; label?: string }) {
+  return (
+    <details className="group mt-1">
+      <summary className="cursor-pointer text-[12px] text-ink-2 underline decoration-rule-strong underline-offset-2 hover:text-ink">
+        <span className="group-open:hidden">{label}</span>
+        <span className="hidden group-open:inline">Hide</span>
+      </summary>
+      <div className="mt-2 border-l-2 border-rule pl-3">
+        <Body change={change} />
+      </div>
+    </details>
+  );
+}
+
+function CompactChange({ change }: { change: ProgramChange }) {
+  const lead = (
+    <span className="mr-1.5 inline-flex translate-y-[2px] text-ink-2" aria-hidden="true">
+      {ICON[change.type]}
+    </span>
+  );
+  switch (change.type) {
+    case 'meta': {
+      const short = change.before.length + change.after.length < 90;
+      return (
+        <div className="text-[13.5px] leading-snug">
+          {lead}
+          <span className="font-semibold">{change.field}</span>
+          {short ? (
+            <>
+              {': '}
+              <span className="text-ink-2 line-through decoration-rule-strong">{change.before}</span>
+              <span className="sr-only"> becomes </span>
+              <ArrowRight size={12} className="mx-1.5 inline text-ink-2" aria-hidden="true" />
+              {change.after}
+            </>
+          ) : (
+            <>
+              {' rewritten'}
+              <Wording change={change} />
+            </>
+          )}
+        </div>
+      );
+    }
+    case 'lesson-replaced':
+      return (
+        <p className="text-[13.5px] leading-snug">
+          {lead}
+          <span className="text-ink-2 line-through decoration-rule-strong">{change.before}</span>
+          <span className="sr-only"> replaced by </span>
+          <ArrowRight size={12} className="mx-1.5 inline text-ink-2" aria-hidden="true" />
+          <span className="font-semibold">{change.after}</span>
+          <span className="text-ink-2"> · {change.where}</span>
+        </p>
+      );
+    case 'lesson-added':
+      return (
+        <p className="text-[13.5px] leading-snug">
+          {lead}Added <span className="font-semibold">{change.title}</span>
+          <span className="text-ink-2"> · {change.where}</span>
+        </p>
+      );
+    case 'lesson-removed':
+      return (
+        <p className="text-[13.5px] leading-snug">
+          {lead}Removed <span className="font-semibold">{change.title}</span>
+          <span className="text-ink-2"> · was {change.where}</span>
+        </p>
+      );
+    case 'lesson-moved':
+      return (
+        <p className="text-[13.5px] leading-snug">
+          {lead}Moved <span className="font-semibold">{change.title}</span>
+          <span className="text-ink-2">
+            {' '}
+            · from {change.from} to {change.to}
+          </span>
+        </p>
+      );
+    case 'lesson-edited':
+      return (
+        <div className="text-[13.5px] leading-snug">
+          {lead}Edited <span className="font-semibold">{change.title}</span>
+          <span className="text-ink-2"> · {change.fields.map((f) => f.field.toLowerCase()).join(', ')}</span>
+          <Wording change={change} />
+        </div>
+      );
+    case 'assessment-changed':
+      return (
+        <div className="text-[13.5px] leading-snug">
+          {lead}
+          <span className="font-semibold">{change.title}</span> is now scored by <span className="meta text-ink">{change.after}</span>
+          <span className="text-ink-2">
+            {' '}
+            · was <span className="meta">{change.before}</span>
+            {change.criteriaAdded.length > 0 && ` · ${change.criteriaAdded.length} criteria added`}
+            {change.criteriaRemoved.length > 0 && ` · ${change.criteriaRemoved.length} removed`}
+          </span>
+          {(change.criteriaAdded.length > 0 || change.criteriaRemoved.length > 0) && <Wording change={change} label="Show criteria" />}
+        </div>
+      );
+  }
+}
+
+export interface ExplainedItem extends ChangeReason {
+  change: ProgramChange;
+}
+
+/**
+ * The compact "what changed and why" comparison. Changes that share a reason are
+ * grouped, so each reason is stated once next to everything it caused.
+ */
+export function ChangeGroups({ items, testId }: { items: ExplainedItem[]; testId?: string }) {
+  const groups: Array<{ key: string; why: string; source: ChangeReason['source']; changes: ProgramChange[] }> = [];
+  for (const item of items) {
+    const key = `${item.source}|${item.why}`;
+    let group = groups.find((g) => g.key === key);
+    if (!group) {
+      group = { key, why: item.why, source: item.source, changes: [] };
+      groups.push(group);
+    }
+    group.changes.push(item.change);
+  }
+  if (groups.length === 0) return <p className="text-[13.5px] text-ink-2">No changes.</p>;
+  return (
+    <div data-testid={testId}>
+      <div className="hidden grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-x-8 border-b border-rule-strong pb-1.5 md:grid" aria-hidden="true">
+        <p className="eyebrow">What changed</p>
+        <p className="eyebrow">Why</p>
+      </div>
+      <ol className="flex flex-col">
+        {groups.map((group) => (
+          <li
+            key={group.key}
+            className="grid gap-x-8 gap-y-2.5 border-t border-rule py-3.5 first:border-t-0 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]"
+            data-change-source={group.source}
+          >
+            <ul className="flex min-w-0 flex-col gap-2">
+              {group.changes.map((change, i) => (
+                <li key={i} data-change-type={change.type}>
+                  <CompactChange change={change} />
+                </li>
+              ))}
+            </ul>
+            <div className="min-w-0 text-[13px] leading-snug text-ink-2">
+              <Tag tone={SOURCE_TAG[group.source].tone}>{SOURCE_TAG[group.source].label}</Tag>
+              <p className="mt-1.5">
+                <span className="sr-only">Why: </span>
+                {group.why}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }

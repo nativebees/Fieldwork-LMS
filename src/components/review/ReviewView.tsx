@@ -7,20 +7,32 @@ import { cn } from '../../lib/cn';
 import { copyText, demoUrl, downloadText } from '../../lib/download';
 import { formatDateRange, formatTime, plural } from '../../lib/format';
 import { hrefFor } from '../../lib/router';
-import { baselineProgram, buildFollowUpPlan, buildMarkdownBrief, buildPlanJson, explainChanges, exportFileBase, type ExportContext } from '../../rules/export';
+import {
+  baselineProgram,
+  buildFollowUpPlan,
+  buildMarkdownBrief,
+  buildPlanJson,
+  explainChanges,
+  exportFileBase,
+  type ExportContext,
+} from '../../rules/export';
 import { orphanedAttempts, programProgress } from '../../rules/learner';
 import { listLessons, programCriteria, totalMinutes } from '../../rules/program';
 import { chosenOption, rubricTotal, scoreSellerRubric } from '../../rules/sellerRubric';
 import { useAccountData } from '../../state/data';
 import { PRIMARY_RECOMMENDATION_ID } from '../../state/reducer';
 import { useStore } from '../../state/store';
-import { ChangeList } from '../ChangeList';
+import { ChangeGroups } from '../ChangeList';
 import { useFeedback } from '../ui/feedback';
 import { Button, LinkButton, Tag } from '../ui/primitives';
 
 function Part({ n, title, children, aside, testId }: { n: number; title: string; children: ReactNode; aside?: ReactNode; testId: string }) {
   return (
-    <section className="grid gap-x-8 gap-y-3 border-t border-rule-strong py-7 md:grid-cols-[200px_minmax(0,1fr)]" data-testid={testId} aria-labelledby={`${testId}-title`}>
+    <section
+      className="grid gap-x-8 gap-y-3 border-t border-rule-strong py-7 md:grid-cols-[200px_minmax(0,1fr)]"
+      data-testid={testId}
+      aria-labelledby={`${testId}-title`}
+    >
       <div>
         <p className="meta tabular">{String(n).padStart(2, '0')}</p>
         <h2 id={`${testId}-title`} className="font-display mt-1 text-[22px]">
@@ -55,13 +67,20 @@ export function ReviewView() {
   const { program } = state;
 
   const initial = state.decisions[PRIMARY_RECOMMENDATION_ID];
-  const initialChoice = initial?.choiceId ? [...INITIAL_INTERVENTION_CHOICES, ...DISMISS_REASONS].find((c) => c.id === initial.choiceId)?.label : null;
+  const initialChoice = initial?.choiceId
+    ? [...INITIAL_INTERVENTION_CHOICES, ...DISMISS_REASONS].find((c) => c.id === initial.choiceId)?.label
+    : null;
   const followUp = chosenOption(state.rehearsal, 'followUp', state.sellerProfileId);
   const intervention = chosenOption(state.rehearsal, 'intervention', state.sellerProfileId);
 
   const baseline = baselineProgram(state);
   const changes = useMemo(() => explainChanges(state), [state]);
-  const rubric = scoreSellerRubric({ profileId: state.sellerProfileId, rehearsal: state.rehearsal, program, constraintKnown: state.constraint !== null });
+  const rubric = scoreSellerRubric({
+    profileId: state.sellerProfileId,
+    rehearsal: state.rehearsal,
+    program,
+    constraintKnown: state.constraint !== null,
+  });
   const total = rubricTotal(rubric);
   const progress = programProgress(program, state.attempts);
   const orphans = orphanedAttempts(program, state.attempts);
@@ -123,16 +142,29 @@ export function ReviewView() {
         <p className="eyebrow">Review and export · {ACCOUNT.name}</p>
         <h1 className="font-display mt-3 text-[34px] sm:text-[44px]">What changed, and why.</h1>
         <p className="mt-4 max-w-[62ch] text-[16px] leading-relaxed text-ink-2">
-          The plan you started with, what the customer told you and the plan you would take back to them. Everything on this page is read from the
-          current state of the demo.
+          The plan you started with, what the customer told you and the plan you would take back to them. Everything on this page is read
+          from the current state of the demo.
         </p>
       </header>
 
-      <Part n={1} title="Initial recommendation" testId="review-initial" aside={state.constraint && <Tag tone="outline"><Lock size={10} aria-hidden="true" />Locked</Tag>}>
+      <Part
+        n={1}
+        title="Initial recommendation"
+        testId="review-initial"
+        aside={
+          state.constraint && (
+            <Tag tone="outline">
+              <Lock size={10} aria-hidden="true" />
+              Locked
+            </Tag>
+          )
+        }
+      >
         {initial ? (
           <>
             <p className="text-[16px] leading-relaxed">
-              {initial.decision === 'accept' && 'You accepted the suggested practice program for the Marketing cohort: save the context, map the workflow, package the instruction, apply it to a new brief.'}
+              {initial.decision === 'accept' &&
+                'You accepted the suggested practice program for the Marketing cohort: save the context, map the workflow, package the instruction, apply it to a new brief.'}
               {initial.decision === 'adapt' && `You adapted the suggestion${initialChoice ? `: ${initialChoice.toLowerCase()}.` : '.'}`}
               {initial.decision === 'dismiss' && `You dismissed the suggestion${initialChoice ? `: ${initialChoice.toLowerCase()}.` : '.'}`}
             </p>
@@ -158,7 +190,9 @@ export function ReviewView() {
       <Part n={2} title="Customer constraint" testId="review-constraint">
         {state.constraint ? (
           <>
-            <blockquote className="font-display border-l-[3px] border-terracotta pl-4 text-[22px] leading-snug">“{CUSTOMER_CONSTRAINT.quote}”</blockquote>
+            <blockquote className="font-display border-l-[3px] border-terracotta pl-4 text-[22px] leading-snug">
+              “{CUSTOMER_CONSTRAINT.quote}”
+            </blockquote>
             <p className="meta mt-2">
               {CUSTOMER_CONSTRAINT.speaker} · synthetic sponsor statement · heard at {formatTime(state.constraint.revealedAt)}
             </p>
@@ -193,21 +227,25 @@ export function ReviewView() {
         <div className="mb-5 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
           <Stat label="Lessons" before={listLessons(baseline).length} after={lessons.length} />
           <Stat label="Minutes" before={totalMinutes(baseline)} after={totalMinutes(program)} />
-          <Stat label="Scored criteria" before={programCriteria(baseline).filter((c) => c.mapped).length} after={programCriteria(program).filter((c) => c.mapped).length} />
+          <Stat
+            label="Scored criteria"
+            before={programCriteria(baseline).filter((c) => c.mapped).length}
+            after={programCriteria(program).filter((c) => c.mapped).length}
+          />
         </div>
         <p className="mb-3 text-[13px] text-ink-2">
-          Compared with {state.programAtReveal ? 'the program as it stood when the customer shared the constraint' : 'the starting program'}.
+          Compared with {state.programAtReveal ? 'the program as it stood when the customer shared the constraint' : 'the starting program'}
+          .
         </p>
         {changes.length === 0 ? (
           <p className="rounded-md border border-rule-strong bg-surface-soft px-4 py-3 text-[14px]" data-testid="review-no-changes">
-            No changes yet.{' '}
-            {state.constraint ? 'The program does not reflect what the customer said. ' : ''}
+            No changes yet. {state.constraint ? 'The program does not reflect what the customer said. ' : ''}
             <a href={hrefFor('studio')} className="font-semibold underline underline-offset-2">
               Open the studio
             </a>
           </p>
         ) : (
-          <ChangeList changes={changes.map((c) => c.change)} reasons={changes} testId="review-changes" />
+          <ChangeGroups items={changes} testId="review-changes" />
         )}
       </Part>
 
@@ -238,8 +276,8 @@ export function ReviewView() {
               ))}
             </ul>
             <p className="mt-2 text-[12px] leading-snug text-ink-2">
-              Scored from structured choices and program state only. This is performance on a practice task. It is not a hiring or employment
-              assessment.
+              Scored from structured choices and program state only. This is performance on a practice task. It is not a hiring or
+              employment assessment.
             </p>
             {state.rehearsal.reflection.trim() && (
               <div className="mt-4 border-t border-rule pt-3">
@@ -255,11 +293,13 @@ export function ReviewView() {
             <div className="flex items-end justify-between gap-3 border-b border-rule pb-2">
               <p className="eyebrow">Learner task · customer preview</p>
               <p className="tabular text-[13px] text-ink-2" data-testid="review-learner-total">
-                <span className="text-[18px] font-semibold text-ink">{progress.criteriaDemonstrated}</span> / {progress.criteriaTotal} criteria
+                <span className="text-[18px] font-semibold text-ink">{progress.criteriaDemonstrated}</span> / {progress.criteriaTotal}{' '}
+                criteria
               </p>
             </div>
             <p className="tabular mt-2 text-[13px] text-ink-2">
-              Practice attempted in {progress.attempted} of {plural(progress.lessons, 'lesson')}. Attempting and demonstrating are counted separately.
+              Practice attempted in {progress.attempted} of {plural(progress.lessons, 'lesson')}. Attempting and demonstrating are counted
+              separately.
             </p>
             <ul className="mt-1 flex flex-col">
               {lessons.map(({ lesson }) => {
@@ -301,8 +341,8 @@ export function ReviewView() {
             </ul>
             {orphans.length > 0 && (
               <p className="mt-2 text-[12.5px] leading-snug text-ink-2">
-                {plural(orphans.length, 'attempt')} on lessons that are no longer in the program {orphans.length === 1 ? 'is' : 'are'} kept in the export and not
-                counted here.
+                {plural(orphans.length, 'attempt')} on lessons that are no longer in the program {orphans.length === 1 ? 'is' : 'are'} kept
+                in the export and not counted here.
               </p>
             )}
             <p className="mt-2 text-[12px] leading-snug text-ink-2">
@@ -335,15 +375,19 @@ export function ReviewView() {
           </p>
         )}
         <p className="mt-3 text-[13px] leading-snug text-ink-2">{plan.boundary}</p>
-        <p className="mt-3 rounded-md border border-rule bg-surface-soft px-4 py-3 text-[13.5px] leading-snug" data-testid="review-adoption">
+        <p
+          className="mt-3 rounded-md border border-rule bg-surface-soft px-4 py-3 text-[13.5px] leading-snug"
+          data-testid="review-adoption"
+        >
           {data.status === 'ready' ? (
             <>
               Adoption figures are unchanged by anything in this demo:{' '}
               <span className="tabular font-semibold">
-                {data.value.organization.active} of {data.value.organization.assigned} seats active ({data.value.organization.activePercent}%)
+                {data.value.organization.active} of {data.value.organization.assigned} seats active ({data.value.organization.activePercent}
+                %)
               </span>{' '}
-              for {formatDateRange(OBSERVATION_WINDOW.start, OBSERVATION_WINDOW.end)}. Completing practice is not adoption, and no revenue, time saved or
-              win-rate figure is claimed.
+              for {formatDateRange(OBSERVATION_WINDOW.start, OBSERVATION_WINDOW.end)}. Completing practice is not adoption, and no revenue,
+              time saved or win-rate figure is claimed.
             </>
           ) : (
             'Adoption figures are unavailable right now. Nothing in this demo changes them, and no revenue, time saved or win-rate figure is claimed.'
@@ -353,11 +397,17 @@ export function ReviewView() {
 
       <Part n={6} title="Export" testId="review-export" aside={<Tag tone="outline">Local download</Tag>}>
         <p className="max-w-[62ch] text-[14.5px] leading-relaxed">
-          Both files are built from the plan as it stands right now. Exporting downloads a file to this device. It does not send, assign, publish or
-          enroll anyone.
+          Both files are built from the plan as it stands right now. Exporting downloads a file to this device. It does not send, assign,
+          publish or enroll anyone.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <Button variant="primary" size="lg" icon={<FileText size={15} aria-hidden="true" />} onClick={downloadMarkdown} data-testid="export-markdown">
+          <Button
+            variant="primary"
+            size="lg"
+            icon={<FileText size={15} aria-hidden="true" />}
+            onClick={downloadMarkdown}
+            data-testid="export-markdown"
+          >
             Download customer brief (.md)
           </Button>
           <Button size="lg" icon={<FileJson size={15} aria-hidden="true" />} onClick={downloadJson} data-testid="export-json">
@@ -373,8 +423,14 @@ export function ReviewView() {
           </Button>
         </div>
         <details className="mt-5" data-testid="brief-preview">
-          <summary className="cursor-pointer text-[13.5px] font-semibold underline decoration-rule-strong underline-offset-2">Preview the customer brief</summary>
-          <pre className="scroll-quiet mt-3 max-h-[440px] overflow-auto rounded-md border border-rule-strong bg-paper p-4 font-mono text-[12px] leading-relaxed whitespace-pre-wrap text-ink">
+          <summary className="cursor-pointer text-[13.5px] font-semibold underline decoration-rule-strong underline-offset-2">
+            Preview the customer brief
+          </summary>
+          <pre
+            tabIndex={0}
+            aria-label="Customer brief preview"
+            className="scroll-quiet mt-3 max-h-[440px] overflow-auto rounded-md border border-rule-strong bg-paper p-4 font-mono text-[12px] leading-relaxed whitespace-pre-wrap text-ink"
+          >
             {markdownPreview}
           </pre>
         </details>

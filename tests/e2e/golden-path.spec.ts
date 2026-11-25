@@ -87,7 +87,9 @@ test.describe('golden path', () => {
     await expect(finance).toContainText('No learning-need hypothesis');
     await expect(finance).toContainText('No training is proposed');
     await page.getByTestId('ask-pip-hyp-finance').click();
-    await expect(page.getByTestId('pip-hyp-finance')).toContainText('This could be an access issue. Check the permission before assigning training.');
+    await expect(page.getByTestId('pip-hyp-finance')).toContainText(
+      'This could be an access issue. Check the permission before assigning training.',
+    );
 
     /* Evidence drawer keeps provenance, and returns focus when closed */
     await page.getByTestId('evidence-hyp-marketing').click();
@@ -362,12 +364,56 @@ test.describe('golden path', () => {
     await page.getByTestId('tailor-shorten').click();
     await expect(page.getByTestId('toast')).toContainText('Nothing to change');
 
+    // Duplicate, then remove the copy.
+    await page.getByTestId('duplicate-lesson-1').click();
+    await expect(page.getByTestId('journey')).toContainText('Create a reusable campaign-brief context (copy)');
+    await expect(page.getByTestId('studio-meta')).toContainText('5 lessons');
+    await page
+      .locator('[data-testid="journey"] li', { hasText: '(copy)' })
+      .getByRole('button', { name: /^Remove/ })
+      .click();
+    await expect(page.getByTestId('studio-meta')).toContainText('4 lessons');
+
     await page.getByTestId('select-lesson-2').click();
     await page.getByTestId('tailor-adapt').click();
     await expect(page.getByTestId('proposal-dialog')).toContainText('Meridian Works');
     await page.getByTestId('proposal-apply').click();
     await page.getByTestId('field-duration').fill('0');
     await expect(page.getByText('Enter a whole number from 1 to 30.')).toBeVisible();
+  });
+
+  test('an empty program is handled in the studio, the preview and the review', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await openDemo(page, '/#/preview');
+    // Leave one attempt behind, so there is an attempt on a lesson that later disappears.
+    await page.getByTestId('choice-sort-audience').check();
+    await page.getByTestId('check-work').click();
+    await expect(page.getByTestId('attempt-summary')).toContainText('Attempt 1');
+
+    await page.getByTestId('switch-studio').click();
+    for (const id of ['lesson-1', 'lesson-2', 'lesson-3', 'lesson-4']) await page.getByTestId(`remove-${id}`).click();
+    await expect(page.getByTestId('empty-program')).toBeVisible();
+    await expect(page.getByTestId('studio-meta')).toContainText('0 lessons');
+    await expect(page.getByTestId('empty-module-1')).toBeVisible();
+
+    await page.getByTestId('switch-preview').click();
+    await expect(page.getByTestId('preview-empty')).toContainText('This program has no lessons yet.');
+
+    await page.getByTestId('nav-review').click();
+    await expect(page.getByTestId('review-learner')).toContainText('1 attempt on lessons that are no longer in the program');
+    const [download] = await Promise.all([page.waitForEvent('download'), page.getByTestId('export-markdown').click()]);
+    expect(readFileSync((await download.path())!, 'utf8')).toContain('0 lessons');
+
+    // Drag a lesson into the empty first module, then restore the starting program.
+    await page.getByTestId('nav-studio').click();
+    await dragOnto(page, page.getByTestId('template-tpl-context'), page.getByTestId('empty-module-1'), 70);
+    expect(await lessonTitles(page)).toEqual(['Create a reusable campaign-brief context']);
+    await expect(page.getByTestId('empty-module-2')).toBeVisible();
+    await page.getByTestId('open-reset').click();
+    await page.getByTestId('reset-program').click();
+    await expect(page.getByTestId('studio-meta')).toContainText('4 lessons');
+    expect(errors).toEqual([]);
   });
 
   test('unavailable analytics shows an honest empty state and the studio still works', async ({ page }) => {

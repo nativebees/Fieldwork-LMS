@@ -1,10 +1,4 @@
-import {
-  GENERIC_VERIFICATION_BLOCKS,
-  PROGRAM_META,
-  TEMPLATE_IDS,
-  VERIFICATION_VARIANTS,
-  instantiateTemplate,
-} from '../fixtures/lessons';
+import { GENERIC_VERIFICATION_BLOCKS, PROGRAM_META, TEMPLATE_IDS, VERIFICATION_VARIANTS, instantiateTemplate } from '../fixtures/lessons';
 import type {
   AccountContext,
   ConstraintSuggestion,
@@ -109,7 +103,10 @@ function lessonsByTemplate(program: LearningProgram, templateId: string): Lesson
     .filter((l) => l.templateId === templateId);
 }
 
-function suggestionState(program: LearningProgram, id: SuggestionId): { status: 'applied' | 'pending' | 'not-applicable'; lessonIds: string[] } {
+function suggestionState(
+  program: LearningProgram,
+  id: SuggestionId,
+): { status: 'applied' | 'pending' | 'not-applicable'; lessonIds: string[] } {
   if (id === 's-claims') {
     const skill = lessonsByTemplate(program, TEMPLATE_IDS.skill);
     const claims = listLessons(program)
@@ -210,18 +207,22 @@ export function proposeSuggestions(
   dismissed: SuggestionId[],
   counter: number,
 ): ProposalResult {
-  const pending = evaluateSuggestions(program, dismissed).filter((s) => ids.includes(s.id) && (s.status === 'pending' || s.status === 'dismissed'));
+  const pending = evaluateSuggestions(program, dismissed).filter(
+    (s) => ids.includes(s.id) && (s.status === 'pending' || s.status === 'dismissed'),
+  );
   if (pending.length === 0) return { ok: false, reason: 'These changes are already in the program.' };
   let next = program;
   let idsUsed = 0;
   const lessonIds: string[] = [];
   let selectLessonId: string | undefined;
+  const logEntries: NonNullable<Proposal['logEntries']> = [];
   for (const s of pending) {
     const step = applySuggestion(next, s.id, counter + idsUsed);
     next = step.program;
     idsUsed += step.idsUsed;
     lessonIds.push(...step.lessonIds);
     selectLessonId ??= step.selectLessonId;
+    logEntries.push({ summary: s.title, reason: s.why, lessonIds: step.lessonIds, suggestionId: s.id });
   }
   const single = pending.length === 1 ? pending[0] : null;
   return {
@@ -236,6 +237,7 @@ export function proposeSuggestions(
       lessonIds,
       suggestionId: single?.id,
       selectLessonId,
+      logEntries,
     },
   };
 }
@@ -268,7 +270,9 @@ const ADAPTED_EXAMPLES: Record<string, ExampleBuilder> = {
     `At ${account.name}, the ${account.approvalOwnerRole} is the approver. The writer hands over the draft, the claim-to-source list and anything still unsupported. If the owner is away, the brief waits.`,
   [TEMPLATE_IDS.transfer]: ({ account, constraintKnown }) =>
     `The next ${account.name} request is a webinar brief for Insights. The template and tone guidance carry over. The Relay details do not.` +
-    (constraintKnown ? ` The claim check and the ${account.approvalOwnerRole}’s approval apply exactly as they did for the launch brief.` : ''),
+    (constraintKnown
+      ? ` The claim check and the ${account.approvalOwnerRole}’s approval apply exactly as they did for the launch brief.`
+      : ''),
 };
 
 export function proposeAdaptToWorkflow(program: LearningProgram, lessonId: string, ctx: TailoringContext): ProposalResult {

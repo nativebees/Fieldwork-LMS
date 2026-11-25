@@ -90,7 +90,12 @@ export function RecommendationCard({ hypothesis, onOpenEvidence }: Props) {
           </h3>
         </div>
         <div className="flex items-center gap-1.5">
-          <Button size="sm" icon={<FileSearch size={13} aria-hidden="true" />} onClick={onOpenEvidence} data-testid={`evidence-${hypothesis.id}`}>
+          <Button
+            size="sm"
+            icon={<FileSearch size={13} aria-hidden="true" />}
+            onClick={onOpenEvidence}
+            data-testid={`evidence-${hypothesis.id}`}
+          >
             Evidence
           </Button>
           <Button
@@ -186,7 +191,12 @@ export function RecommendationCard({ hypothesis, onOpenEvidence }: Props) {
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2.5">
             <p className="text-[13.5px] font-semibold">{isPrimary ? 'Your initial call' : 'Your call'}</p>
             <div className="flex flex-wrap gap-2">
-              <Button variant={isPrimary ? 'primary' : 'secondary'} size="sm" onClick={() => record('accept', null, '')} data-testid={`decision-accept-${hypothesis.id}`}>
+              <Button
+                variant={isPrimary ? 'primary' : 'secondary'}
+                size="sm"
+                onClick={() => record('accept', null, '')}
+                data-testid={`decision-accept-${hypothesis.id}`}
+              >
                 Accept
               </Button>
               <Button size="sm" onClick={() => setMode('adapt')} data-testid={`decision-adapt-${hypothesis.id}`}>
@@ -207,7 +217,9 @@ export function RecommendationCard({ hypothesis, onOpenEvidence }: Props) {
           >
             {options.length > 0 && (
               <fieldset>
-                <legend className="mb-2 text-[13.5px] font-semibold">{mode === 'dismiss' ? 'Why dismiss it?' : 'How would you adapt it?'}</legend>
+                <legend className="mb-2 text-[13.5px] font-semibold">
+                  {mode === 'dismiss' ? 'Why dismiss it?' : 'How would you adapt it?'}
+                </legend>
                 <div className="flex flex-col gap-1.5">
                   {options.map((option) => (
                     <label

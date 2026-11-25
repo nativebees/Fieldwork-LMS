@@ -101,14 +101,18 @@ export function PreviewView({ lessonId, onSelectLesson, focusMode, onFocusMode }
     articleRef.current?.focus({ preventScroll: true });
   }, [currentId]);
 
-  const wrap = (children: ReactNode) => <div className={cn('mx-auto px-4 sm:px-6', focusMode ? 'max-w-[820px] pt-6 pb-20' : 'max-w-[1180px] pt-7 pb-16')}>{children}</div>;
+  const wrap = (children: ReactNode) => (
+    <div className={cn('mx-auto px-4 sm:px-6', focusMode ? 'max-w-[820px] pt-6 pb-20' : 'max-w-[1180px] pt-7 pb-16')}>{children}</div>
+  );
 
   if (!current) {
     return wrap(
       <div className="py-12" data-testid="preview-empty">
         <p className="eyebrow">Customer preview</p>
         <h1 className="font-display mt-2 text-[30px]">This program has no lessons yet.</h1>
-        <p className="mt-3 max-w-[56ch] text-[15px] text-ink-2">The customer sees exactly what is in the studio. Add a lesson there and it appears here.</p>
+        <p className="mt-3 max-w-[56ch] text-[15px] text-ink-2">
+          The customer sees exactly what is in the studio. Add a lesson there and it appears here.
+        </p>
         <div className="mt-5">
           <LinkButton href={hrefFor('studio')} variant="primary">
             Open the studio
@@ -134,7 +138,13 @@ export function PreviewView({ lessonId, onSelectLesson, focusMode, onFocusMode }
                 Lesson {position} of {total}
               </span>
             </p>
-            <Button size="sm" variant="ghost" icon={<Minimize2 size={13} aria-hidden="true" />} onClick={() => onFocusMode(false)} data-testid="exit-focus">
+            <Button
+              size="sm"
+              variant="ghost"
+              icon={<Minimize2 size={13} aria-hidden="true" />}
+              onClick={() => onFocusMode(false)}
+              data-testid="exit-focus"
+            >
               Exit focus mode
             </Button>
           </div>
@@ -148,7 +158,8 @@ export function PreviewView({ lessonId, onSelectLesson, focusMode, onFocusMode }
               <div className="min-w-0">
                 <p className="eyebrow">Customer preview · what the learner sees</p>
                 <p className="mt-2 max-w-[64ch] text-[13.5px] leading-snug text-ink-2">
-                  This is the program from the studio, rendered from the same state. Seller notes, CRM context and account figures are left out.
+                  This is the program from the studio, rendered from the same state. Seller notes, CRM context and account figures are left
+                  out.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -160,7 +171,7 @@ export function PreviewView({ lessonId, onSelectLesson, focusMode, onFocusMode }
             </header>
           )}
 
-          <div className={cn(!focusMode && 'paper overflow-hidden')}>
+          <div className={cn(!focusMode && 'paper')}>
             {!focusMode && (
               <div className="border-b border-rule px-5 py-6 sm:px-8">
                 <p className="meta">
@@ -173,7 +184,12 @@ export function PreviewView({ lessonId, onSelectLesson, focusMode, onFocusMode }
                 <p className="mt-2 text-[13px] text-ink-2">For {program.audience}</p>
                 <div className="mt-5 flex flex-wrap gap-x-8 gap-y-3">
                   <Meter label="Practice attempted" value={progress.attempted} total={progress.lessons} testId="meter-attempted" />
-                  <Meter label="Criteria demonstrated" value={progress.criteriaDemonstrated} total={progress.criteriaTotal} testId="meter-criteria" />
+                  <Meter
+                    label="Criteria demonstrated"
+                    value={progress.criteriaDemonstrated}
+                    total={progress.criteriaTotal}
+                    testId="meter-criteria"
+                  />
                 </div>
                 <p className="mt-2 text-[12px] text-ink-2">Attempting a lesson and demonstrating its criteria are counted separately.</p>
               </div>
@@ -181,55 +197,69 @@ export function PreviewView({ lessonId, onSelectLesson, focusMode, onFocusMode }
 
             <div className={cn('grid', !focusMode && 'lg:grid-cols-[270px_minmax(0,1fr)]')}>
               {!focusMode && (
-                <nav aria-label="Lessons" className="border-b border-rule px-5 py-5 sm:px-8 lg:border-r lg:border-b-0 lg:px-5" data-testid="lesson-nav">
-                  {program.modules.map((module, mi) => (
-                    <div key={module.id} className="mb-5 last:mb-0">
-                      <p className="eyebrow mb-2">
-                        Module {mi + 1} · {module.title}
-                      </p>
-                      {module.lessonIds.length === 0 && <p className="text-[12.5px] text-ink-2">No lessons.</p>}
-                      <ol className="flex flex-col gap-0.5">
-                        {module.lessonIds.map((id) => {
-                          const loc = lessons.find((l) => l.lesson.id === id);
-                          if (!loc) return null;
-                          const p = progress.byLesson[id];
-                          const active = id === lesson.id;
-                          return (
-                            <li key={id}>
-                              <a
-                                href={hrefFor('preview', id)}
-                                aria-current={active ? 'page' : undefined}
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  onSelectLesson(id);
-                                }}
-                                data-testid={`preview-lesson-${id}`}
-                                data-status={p.status}
-                                className={cn(
-                                  'flex items-start gap-2.5 rounded-sm px-2.5 py-2 no-underline transition-colors duration-150',
-                                  active ? 'bg-surface shadow-[inset_3px_0_0_var(--color-terracotta)]' : 'hover:bg-surface-soft',
-                                )}
-                              >
-                                <span className="mt-[3px] shrink-0">
-                                  <StatusIcon status={p.status} />
-                                </span>
-                                <span className="min-w-0">
-                                  <span className={cn('block text-[13.5px] leading-snug', active && 'font-semibold')}>{loc.lesson.title || 'Untitled lesson'}</span>
-                                  <span className="mt-0.5 block text-[11.5px] text-ink-2">
-                                    {loc.lesson.durationMin} min · {statusLine(p)}
+                <nav
+                  aria-label="Lessons"
+                  className="border-b border-rule px-5 py-5 sm:px-8 lg:border-r lg:border-b-0 lg:px-5"
+                  data-testid="lesson-nav"
+                >
+                  <div className="lg:sticky lg:top-28">
+                    {program.modules.map((module, mi) => (
+                      <div key={module.id} className="mb-5 last:mb-0">
+                        <p className="eyebrow mb-2">
+                          Module {mi + 1} · {module.title}
+                        </p>
+                        {module.lessonIds.length === 0 && <p className="text-[12.5px] text-ink-2">No lessons.</p>}
+                        <ol className="flex flex-col gap-0.5">
+                          {module.lessonIds.map((id) => {
+                            const loc = lessons.find((l) => l.lesson.id === id);
+                            if (!loc) return null;
+                            const p = progress.byLesson[id];
+                            const active = id === lesson.id;
+                            return (
+                              <li key={id}>
+                                <a
+                                  href={hrefFor('preview', id)}
+                                  aria-current={active ? 'page' : undefined}
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    onSelectLesson(id);
+                                  }}
+                                  data-testid={`preview-lesson-${id}`}
+                                  data-status={p.status}
+                                  className={cn(
+                                    'flex items-start gap-2.5 rounded-sm px-2.5 py-2 no-underline transition-colors duration-150',
+                                    active ? 'bg-surface shadow-[inset_3px_0_0_var(--color-terracotta)]' : 'hover:bg-surface-soft',
+                                  )}
+                                >
+                                  <span className="mt-[3px] shrink-0">
+                                    <StatusIcon status={p.status} />
                                   </span>
-                                </span>
-                              </a>
-                            </li>
-                          );
-                        })}
-                      </ol>
-                    </div>
-                  ))}
+                                  <span className="min-w-0">
+                                    <span className={cn('block text-[13.5px] leading-snug', active && 'font-semibold')}>
+                                      {loc.lesson.title || 'Untitled lesson'}
+                                    </span>
+                                    <span className="mt-0.5 block text-[11.5px] text-ink-2">
+                                      {loc.lesson.durationMin} min · {statusLine(p)}
+                                    </span>
+                                  </span>
+                                </a>
+                              </li>
+                            );
+                          })}
+                        </ol>
+                      </div>
+                    ))}
+                  </div>
                 </nav>
               )}
 
-              <article ref={articleRef} tabIndex={-1} className={cn('min-w-0 outline-none', focusMode ? 'py-4' : 'px-5 py-7 sm:px-8')} aria-labelledby="lesson-title" data-testid="preview-lesson">
+              <article
+                ref={articleRef}
+                tabIndex={-1}
+                className={cn('min-w-0 outline-none', focusMode ? 'py-4' : 'px-5 py-7 sm:px-8')}
+                aria-labelledby="lesson-title"
+                data-testid="preview-lesson"
+              >
                 <p className="meta tabular">
                   Lesson {position} of {total} · {lesson.durationMin} min
                 </p>
@@ -283,7 +313,12 @@ export function PreviewView({ lessonId, onSelectLesson, focusMode, onFocusMode }
                   {lessonState.scorable ? (
                     <ul className="mt-3 flex flex-col gap-1.5" data-testid="preview-criteria">
                       {lessonState.criteria.map((c) => (
-                        <li key={c.id} className="flex items-start gap-2 text-[13.5px] leading-snug" data-criterion={c.id} data-demonstrated={c.demonstrated}>
+                        <li
+                          key={c.id}
+                          className="flex items-start gap-2 text-[13.5px] leading-snug"
+                          data-criterion={c.id}
+                          data-demonstrated={c.demonstrated}
+                        >
                           {c.demonstrated ? (
                             <Check size={15} className="mt-[2px] shrink-0 text-sage-deep" aria-hidden="true" />
                           ) : (
@@ -301,16 +336,29 @@ export function PreviewView({ lessonId, onSelectLesson, focusMode, onFocusMode }
                   )}
                 </section>
 
-                <nav aria-label="Lesson navigation" className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-5">
+                <nav
+                  aria-label="Lesson navigation"
+                  className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-5"
+                >
                   {previous ? (
-                    <Button variant="ghost" icon={<ArrowLeft size={14} aria-hidden="true" />} onClick={() => onSelectLesson(previous.lesson.id)} data-testid="previous-lesson">
+                    <Button
+                      variant="ghost"
+                      icon={<ArrowLeft size={14} aria-hidden="true" />}
+                      onClick={() => onSelectLesson(previous.lesson.id)}
+                      data-testid="previous-lesson"
+                    >
                       {previous.lesson.title}
                     </Button>
                   ) : (
                     <span />
                   )}
                   {next ? (
-                    <Button variant="primary" iconAfter={<ArrowRight size={14} aria-hidden="true" />} onClick={() => onSelectLesson(next.lesson.id)} data-testid="next-lesson">
+                    <Button
+                      variant="primary"
+                      iconAfter={<ArrowRight size={14} aria-hidden="true" />}
+                      onClick={() => onSelectLesson(next.lesson.id)}
+                      data-testid="next-lesson"
+                    >
                       Next: {next.lesson.title}
                     </Button>
                   ) : focusMode ? (
@@ -318,7 +366,12 @@ export function PreviewView({ lessonId, onSelectLesson, focusMode, onFocusMode }
                       Finish and exit focus mode
                     </Button>
                   ) : (
-                    <LinkButton href={hrefFor('review')} variant="accent" iconAfter={<ArrowRight size={14} aria-hidden="true" />} testId="preview-to-review">
+                    <LinkButton
+                      href={hrefFor('review')}
+                      variant="accent"
+                      iconAfter={<ArrowRight size={14} aria-hidden="true" />}
+                      testId="preview-to-review"
+                    >
                       Review the plan
                     </LinkButton>
                   )}

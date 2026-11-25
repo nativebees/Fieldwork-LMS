@@ -147,7 +147,8 @@ export const REHEARSAL_STEPS: Record<RehearsalStepId, RehearsalStep> = {
         text: 'When a claim gets flagged, what does the campaign owner need to see before they will approve it?',
         short: 'asked what the campaign owner needs to see to approve a flagged claim',
         points: 2,
-        reply: 'A source they can open, with a date on it. Release notes, the pricing sheet, an approved customer study. If there is no source, the claim comes out.',
+        reply:
+          'A source they can open, with a date on it. Release notes, the pricing sheet, an approved customer study. If there is no source, the claim comes out.',
         why: 'It asks about the decision the owner makes and the evidence they need. That tells you what the practice has to teach.',
       },
       {

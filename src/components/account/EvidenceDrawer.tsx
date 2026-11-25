@@ -38,14 +38,17 @@ export function EvidenceDrawer({ hypothesis, cohort, observations, onClose }: Pr
           <section>
             <h3 className="eyebrow mb-2">Observations</h3>
             <p className="meta mb-3">
-              Window {formatDateRange(OBSERVATION_WINDOW.start, OBSERVATION_WINDOW.end)}, {OBSERVATION_WINDOW.days} days, UTC · {SNAPSHOT_LABEL}
+              Window {formatDateRange(OBSERVATION_WINDOW.start, OBSERVATION_WINDOW.end)}, {OBSERVATION_WINDOW.days} days, UTC ·{' '}
+              {SNAPSHOT_LABEL}
             </p>
             <ul className="flex flex-col">
               {rows.map((o) => (
                 <li key={o.id} className="border-t border-rule py-3 first:border-t-0 first:pt-0" data-testid={`observation-${o.id}`}>
                   <div className="flex items-baseline justify-between gap-3">
                     <p className="text-[14px] font-semibold">{o.label}</p>
-                    <p className="tabular shrink-0 text-[15px] font-semibold">{o.value === null ? <span className="italic">Unavailable</span> : formatObservation(o)}</p>
+                    <p className="tabular shrink-0 text-[15px] font-semibold">
+                      {o.value === null ? <span className="italic">Unavailable</span> : formatObservation(o)}
+                    </p>
                   </div>
                   <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-[12.5px]">
                     <dt className="text-ink-2">Denominator</dt>
@@ -74,13 +77,13 @@ export function EvidenceDrawer({ hypothesis, cohort, observations, onClose }: Pr
           <section>
             <h3 className="eyebrow mb-2">The rule that produced this</h3>
             <p className="text-[13.5px] leading-relaxed">
-              A member matches the pattern when they chatted on {FREQUENT_CHAT_DAYS} or more days in the window, both Projects and Skills are
-              available to them, telemetry is sufficient and no Project or Skill use was observed. A restricted capability or a missing value
-              never matches.
+              A member matches the pattern when they chatted on {FREQUENT_CHAT_DAYS} or more days in the window, both Projects and Skills
+              are available to them, telemetry is sufficient and no Project or Skill use was observed. A restricted capability or a missing
+              value never matches.
             </p>
             <p className="mt-2 text-[13.5px] leading-relaxed">
-              The pattern is raised as a hypothesis when at least {MIN_ELIGIBLE_COUNT} members match and they are {Math.round(MIN_ELIGIBLE_SHARE * 100)}%
-              or more of the active members in the group.
+              The pattern is raised as a hypothesis when at least {MIN_ELIGIBLE_COUNT} members match and they are{' '}
+              {Math.round(MIN_ELIGIBLE_SHARE * 100)}% or more of the active members in the group.
             </p>
             <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[13px]">
               <dt className="text-ink-2">Members matching</dt>

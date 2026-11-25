@@ -43,7 +43,7 @@ const VIEW_TITLE: Record<ViewId, string> = {
 function Shell() {
   const { route, navigate } = useHashRoute();
   const { state, save, reset, dispatch } = useStore();
-  const { announce, toast } = useFeedback();
+  const { announce, toast, dismissToast } = useFeedback();
   const [aboutOpen, setAboutOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
@@ -61,7 +61,8 @@ function Shell() {
     }
     window.scrollTo({ top: 0 });
     mainRef.current?.focus({ preventScroll: true });
-  }, [route.view]);
+    dismissToast();
+  }, [route.view, dismissToast]);
 
   // Focus mode only exists inside the customer preview.
   useEffect(() => {
@@ -119,7 +120,10 @@ function Shell() {
               <span className="hidden text-[12.5px] text-ink-2 md:inline">A practice studio for Claude</span>
             </a>
 
-            <nav aria-label="Journey" className="scroll-quiet order-last -mx-4 flex w-[calc(100%+2rem)] overflow-x-auto px-4 lg:order-none lg:mx-0 lg:w-auto lg:flex-1 lg:px-0">
+            <nav
+              aria-label="Journey"
+              className="scroll-quiet order-last -mx-4 flex w-[calc(100%+2rem)] overflow-x-auto px-4 lg:order-none lg:mx-0 lg:w-auto lg:flex-1 lg:px-0"
+            >
               <ol className="flex items-stretch gap-0.5">
                 {VIEWS.map((view) => {
                   const active = route.view === view.id;
@@ -159,10 +163,22 @@ function Shell() {
             </nav>
 
             <div className="ml-auto flex items-center gap-1">
-              <Button variant="ghost" size="sm" icon={<Info size={14} aria-hidden="true" />} onClick={() => setAboutOpen(true)} data-testid="open-about">
+              <Button
+                variant="ghost"
+                size="sm"
+                icon={<Info size={14} aria-hidden="true" />}
+                onClick={() => setAboutOpen(true)}
+                data-testid="open-about"
+              >
                 How this works
               </Button>
-              <Button variant="ghost" size="sm" icon={<RotateCcw size={14} aria-hidden="true" />} onClick={() => setResetOpen(true)} data-testid="open-reset">
+              <Button
+                variant="ghost"
+                size="sm"
+                icon={<RotateCcw size={14} aria-hidden="true" />}
+                onClick={() => setResetOpen(true)}
+                data-testid="open-reset"
+              >
                 Reset
               </Button>
             </div>
@@ -189,7 +205,12 @@ function Shell() {
         {route.view === 'rehearsal' && <RehearsalView />}
         {route.view === 'studio' && <StudioView />}
         {route.view === 'preview' && (
-          <PreviewView lessonId={route.param} onSelectLesson={(id) => navigate('preview', id)} focusMode={focusMode} onFocusMode={setFocusMode} />
+          <PreviewView
+            lessonId={route.param}
+            onSelectLesson={(id) => navigate('preview', id)}
+            focusMode={focusMode}
+            onFocusMode={setFocusMode}
+          />
         )}
         {route.view === 'review' && <ReviewView />}
       </main>
@@ -198,7 +219,11 @@ function Shell() {
         <footer className="border-t border-rule">
           <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-2 px-4 py-4 text-[12px] text-ink-2 sm:px-6">
             <p>Fieldwork is an independent concept. It is not an Anthropic product, and it does not call Claude at runtime.</p>
-            <button type="button" className="underline decoration-rule-strong underline-offset-2 hover:text-ink" onClick={() => setAboutOpen(true)}>
+            <button
+              type="button"
+              className="underline decoration-rule-strong underline-offset-2 hover:text-ink"
+              onClick={() => setAboutOpen(true)}
+            >
               What is synthetic, what is simulated
             </button>
           </div>
@@ -239,7 +264,8 @@ function Shell() {
                 reset();
                 setResetOpen(false);
                 navigate('account');
-                toast({ message: 'Demo reset. Everything is back to the default.' });
+                // Navigation clears toasts, so show this one after the view has changed.
+                window.setTimeout(() => toast({ message: 'Demo reset. Everything is back to the default.' }), 120);
                 announce('The demo was reset.');
               }}
             >

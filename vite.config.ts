@@ -8,6 +8,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: { port: 5173, strictPort: true },
   preview: { port: 4173, strictPort: true },
+  // One small app, one chunk. React, the drag library and the scenario copy make up most of it.
+  build: { chunkSizeWarningLimit: 650 },
   test: {
     include: ['src/**/*.test.ts'],
     environment: 'node',

@@ -67,7 +67,11 @@ describe('live coaching boundary', () => {
   it('a future live response must cite only supplied criteria and sources', () => {
     const allowed = { criterionIds: ['cl.identify'], sourceIds: ['src-meridian-sources'] };
     const ok = validateLiveCoachingResponse(
-      { feedback: [{ criterionId: 'cl.identify', evidence: 'Picked sentence 2.', sourceIds: ['src-meridian-sources'] }], uncertainty: 'low', suggestedNextTask: 'Retry.' },
+      {
+        feedback: [{ criterionId: 'cl.identify', evidence: 'Picked sentence 2.', sourceIds: ['src-meridian-sources'] }],
+        uncertainty: 'low',
+        suggestedNextTask: 'Retry.',
+      },
       allowed,
     );
     expect(ok.ok).toBe(true);

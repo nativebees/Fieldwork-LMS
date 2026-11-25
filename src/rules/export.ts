@@ -5,7 +5,15 @@ import { createDefaultProgram } from '../fixtures/lessons';
 import type { AppState, LearningNeedHypothesis, LearningProgram, ObservationWindow, ProgramChange } from '../types';
 import type { OrganizationSummary } from './analytics';
 import { programProgress } from './learner';
-import { describeChange, diffPrograms, lessonsWithMappedCriteria, listLessons, moduleMinutes, programChecklist, totalMinutes } from './program';
+import {
+  describeChange,
+  diffPrograms,
+  lessonsWithMappedCriteria,
+  listLessons,
+  moduleMinutes,
+  programChecklist,
+  totalMinutes,
+} from './program';
 import { chosenOption, rubricTotal, scoreSellerRubric } from './sellerRubric';
 import { evaluateSuggestions } from './tailoring';
 
@@ -41,8 +49,14 @@ export function buildFollowUpPlan(state: AppState): FollowUpPlan {
       : 'Agree with the sponsor how many recent briefs started from scratch. No baseline exists yet.',
     checkpoints: claimsMeasured
       ? [
-          { day: 14, check: 'With the campaign owner, sample recent briefs. Is the claim check used on live work, and are sources attached?' },
-          { day: 28, check: 'Compare the returned-brief share with the baseline. Ask the campaign owner about rework and whether to continue.' },
+          {
+            day: 14,
+            check: 'With the campaign owner, sample recent briefs. Is the claim check used on live work, and are sources attached?',
+          },
+          {
+            day: 28,
+            check: 'Compare the returned-brief share with the baseline. Ask the campaign owner about rework and whether to continue.',
+          },
         ]
       : [
           { day: 14, check: 'Ask the sponsor for a sample of recent briefs. Did they start from the saved context?' },
@@ -77,11 +91,9 @@ export function explainChanges(state: AppState): ExplainedChange[] {
 
     // The most recent accepted proposal that touched this lesson (or, for a program
     // field, the most recent constraint proposal that could have changed it).
-    const logged = [...state.revisionLog].reverse().find((entry) =>
-      lessonId
-        ? entry.lessonIds.includes(lessonId)
-        : entry.kind === 'constraint' && (entry.suggestionId === 's-goal' || entry.suggestionId === undefined),
-    );
+    const logged = [...state.revisionLog]
+      .reverse()
+      .find((entry) => (lessonId ? entry.lessonIds.includes(lessonId) : entry.kind === 'constraint' && entry.suggestionId === 's-goal'));
     if (logged) {
       const source = logged.kind === 'constraint' ? 'customer-constraint' : logged.kind === 'review' ? 'review' : 'tailoring';
       return { change, summary, why: logged.reason, source };
@@ -94,7 +106,8 @@ export function explainChanges(state: AppState): ExplainedChange[] {
     }
     if (state.constraint && change.type === 'lesson-removed') {
       const claims = suggestions.find((s) => s.id === 's-claims');
-      if (claims?.status === 'applied') return { change, summary, why: `${claims.why} Applied by hand in the studio.`, source: 'customer-constraint' };
+      if (claims?.status === 'applied')
+        return { change, summary, why: `${claims.why} Applied by hand in the studio.`, source: 'customer-constraint' };
     }
     return { change, summary, why: 'Edited by the author in the studio.', source: 'author' };
   });
@@ -149,7 +162,13 @@ export function buildPlanJson(ctx: ExportContext): Record<string, unknown> {
       otherDecisions: Object.values(state.decisions).filter((d) => d.recommendationId !== 'hyp-marketing'),
     },
     customerConstraint: state.constraint
-      ? { known: true, quote: CUSTOMER_CONSTRAINT.quote, speaker: CUSTOMER_CONSTRAINT.speaker, revealedAt: state.constraint.revealedAt, synthetic: true }
+      ? {
+          known: true,
+          quote: CUSTOMER_CONSTRAINT.quote,
+          speaker: CUSTOMER_CONSTRAINT.speaker,
+          revealedAt: state.constraint.revealedAt,
+          synthetic: true,
+        }
       : { known: false },
     program: {
       ...state.program,
@@ -178,7 +197,8 @@ export function buildPlanJson(ctx: ExportContext): Record<string, unknown> {
       reflection: { text: state.rehearsal.reflection, automaticallyAssessed: false },
     },
     learnerPractice: {
-      boundary: 'Attempted practice and demonstrated criteria are separate. Attempts are kept against the rule version they were scored with.',
+      boundary:
+        'Attempted practice and demonstrated criteria are separate. Attempts are kept against the rule version they were scored with.',
       lessonsAttempted: progress.attempted,
       lessons: progress.lessons,
       criteriaDemonstrated: progress.criteriaDemonstrated,
@@ -242,7 +262,8 @@ export function buildMarkdownBrief(ctx: ExportContext): string {
     for (const id of sourceIds) {
       const s = SOURCE_BY_ID[id];
       if (!s) continue;
-      const status = s.review === 'review-required' ? 'Needs review. No review date recorded.' : `Checked ${s.checkedOn ?? 'date not recorded'}.`;
+      const status =
+        s.review === 'review-required' ? 'Needs review. No review date recorded.' : `Checked ${s.checkedOn ?? 'date not recorded'}.`;
       push(`- ${s.title} (${s.publisher}). ${status}${s.reviewNote ? ` ${s.reviewNote}` : ''}`);
     }
     push('');
