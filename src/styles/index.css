@@ -1,0 +1,292 @@
+@import 'tailwindcss';
+
+/*
+  Fieldwork design tokens.
+  Custom Fieldwork choices inspired by Claude's visual language. Not a claim to
+  reproduce official typography or site CSS. Contrast for every text pairing used
+  in the app is asserted in src/styles/tokens.test.ts.
+*/
+
+/* Bundled fonts (SIL Open Font License). Latin subsets only. No font CDN at runtime. */
+@font-face {
+  font-family: 'Newsreader Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url('../../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Newsreader Variable';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url('../../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-wght-italic.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Instrument Sans Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 700;
+  src: url('../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2')
+    format('woff2-variations');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+}
+
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Surfaces */
+  --color-canvas: #faf9f5;
+  --color-paper: #ffffff;
+  --color-surface: #e8e6dc;
+  --color-surface-soft: #f3f1ea;
+
+  /* Ink */
+  --color-ink: #141413;
+  --color-ink-2: #5c5b57;
+  --color-ink-3: #6e6c66;
+
+  /* Rules and control borders */
+  --color-rule: #e5e2dc;
+  --color-rule-strong: #cfcbc2;
+  --color-control: #8f8c84;
+
+  /* Accents. The base hues are for marks and selected states only. */
+  --color-terracotta: #d97757;
+  --color-terracotta-deep: #a8482a;
+  --color-terracotta-wash: #fbeee8;
+  --color-sage: #788c5d;
+  --color-sage-deep: #4c6035;
+  --color-sage-wash: #eef2e7;
+  --color-ochre-deep: #7a5a12;
+  --color-ochre-wash: #f7efd9;
+
+  /* Chart palette. Fixed order, validated for colour-vision deficiency. */
+  --color-chart-focus: #d97757;
+  --color-chart-project: #3f74ad;
+  --color-chart-skill: #7a9a3e;
+  --color-chart-other: #b0aea5;
+  --color-chart-inactive: #e8e6dc;
+
+  --font-serif: 'Newsreader Variable', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+  --radius-full: 999px;
+
+  --shadow-paper: 0 1px 0 rgb(20 20 19 / 0.04), 0 1px 2px rgb(20 20 19 / 0.04);
+  --shadow-lift: 0 8px 24px -8px rgb(20 20 19 / 0.22), 0 2px 6px rgb(20 20 19 / 0.08);
+  --shadow-drawer: -12px 0 32px -16px rgb(20 20 19 / 0.28);
+
+  --ease-out-quiet: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  --animate-rise: rise 160ms var(--ease-out-quiet) both;
+  --animate-fade: fade 140ms ease-out both;
+  --animate-slide-in: slide-in 180ms var(--ease-out-quiet) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes slide-in {
+    from {
+      opacity: 0.4;
+      transform: translateX(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--color-canvas);
+    /* Faint paper grain. Static, inline, no network request. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .08 0 0 0 0 .07 0 0 0 .045 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    font-feature-settings: 'kern', 'liga', 'calt';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 500;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button,
+  [role='button'],
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-terracotta-deep);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background: #f1cfc0;
+    color: var(--color-ink);
+  }
+
+  textarea,
+  input,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  font-weight: 450;
+  letter-spacing: -0.012em;
+  line-height: 1.12;
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+}
+
+@utility meta {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.45;
+  letter-spacing: 0;
+  color: var(--color-ink-2);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+@utility paper {
+  background-color: var(--color-paper);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-paper);
+}
+
+@utility field {
+  width: 100%;
+  background-color: var(--color-paper);
+  border: 1px solid var(--color-control);
+  border-radius: var(--radius-sm);
+  padding: 7px 9px;
+  font-size: 14px;
+  line-height: 1.45;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+  &:hover {
+    border-color: var(--color-ink-2);
+  }
+  &:focus-visible {
+    outline: none;
+    border-color: var(--color-terracotta-deep);
+    box-shadow: 0 0 0 2px rgb(168 72 42 / 0.25);
+  }
+  &[aria-invalid='true'] {
+    border-color: var(--color-terracotta-deep);
+    background-color: var(--color-terracotta-wash);
+  }
+}
+
+/* Diagonal hatch marks a value that is unavailable. It is a data state, not decoration. */
+@utility hatch {
+  background-image: repeating-linear-gradient(135deg, var(--color-control) 0, var(--color-control) 1px, transparent 1px, transparent 4px);
+  background-color: var(--color-surface-soft);
+}
+
+/* A quieter hatch for chrome that marks simulated context. */
+@utility hatch-soft {
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--color-rule-strong) 0,
+    var(--color-rule-strong) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+  background-color: var(--color-surface-soft);
+}
+
+@utility scroll-quiet {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-rule-strong) transparent;
+}
