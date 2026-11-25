@@ -44,6 +44,8 @@ export interface Guidance {
   question: string;
   successCriteria: string[];
   watchOut: string;
+  /** How the live deal shaped this guidance. Role, tenure and deal are the three inputs. */
+  dealNote: string;
   /** Advice that leans on a source. The UI attaches the source's review state. */
   sourcedAdvice: Array<{ text: string; sourceId: string }>;
 }
@@ -86,7 +88,7 @@ type GuidanceBuilder = (r: GuidanceRequest) => GuidanceBody;
 
 const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>> = {
   'investigate-repeatable-work': {
-    'ae-new': ({ account }) => ({
+    'ae-new': ({ account, seller }) => ({
       nextDecision: `Decide what to ask ${account.sponsor.name.split(' ')[0]} before you propose anything.`,
       objective: `Read the signal before you sell to it. Leave the review knowing how ${account.recurringTask} actually get made.`,
       question:
@@ -97,12 +99,13 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
         'You leave without attaching a seat number to the conversation.',
       ],
       watchOut: 'An active-seat percentage describes activity. It does not support an expansion promise.',
+      dealNote: `${account.crm.dealSituation} At ${seller.tenureLabel.replace(' in role', '')} in, the job in this meeting is to learn how the work runs. Nothing here needs a seat number.`,
       sourcedAdvice: [
         { text: 'The sponsor wants to see value before any conversation about seats.', sourceId: 'src-sponsor-note' },
         { text: 'Packaged workflows may get reused more once they exist. Treat this as a question to ask.', sourceId: 'src-field-note' },
       ],
     }),
-    'csm-experienced': ({ account }) => ({
+    'csm-experienced': ({ account, seller }) => ({
       nextDecision: `Decide which single intervention to pilot, and how you and ${account.sponsor.name.split(' ')[0]} will judge it.`,
       objective: 'Pick the one intervention worth a pilot, and agree the pass mark with your sponsor before it starts.',
       question:
@@ -113,6 +116,7 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
         'The sponsor owns the threshold, and a named person reviews the result.',
       ],
       watchOut: 'Three programs at once means you will not know which one helped.',
+      dealNote: `${account.crm.dealSituation} With ${seller.tenureLabel.replace(' in role', '')} on accounts like this, you can use the time before renewal for a four-week pilot and a 28-day read.`,
       sourcedAdvice: [
         { text: 'The sponsor wants to see value before any conversation about seats.', sourceId: 'src-sponsor-note' },
         {
@@ -123,7 +127,7 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
     }),
   },
   'resolve-access': {
-    'ae-new': ({ hypothesis }) => ({
+    'ae-new': ({ hypothesis, account }) => ({
       nextDecision: `Decide whether to raise the ${hypothesis.department} restriction now or leave ${hypothesis.department} out of this review.`,
       objective: 'Treat a missing value as missing. Find out why the capability is off before saying anything about how this team works.',
       question: `I see Skills are not enabled for ${hypothesis.department}. Was that a deliberate choice, and who owns it?`,
@@ -133,6 +137,7 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
         'You propose no training for this group until access is clear.',
       ],
       watchOut: 'Part of this group looks like the Marketing pattern. It is not comparable, because one of the two signals cannot be read.',
+      dealNote: `${account.crm.dealSituation} A wrong claim about ${hypothesis.department} would cost trust you have not built yet.`,
       sourcedAdvice: [
         {
           text: 'Analytics access is created by the customer’s primary owner. You only see what the customer chooses to share.',
@@ -140,7 +145,7 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
         },
       ],
     }),
-    'csm-experienced': ({ hypothesis }) => ({
+    'csm-experienced': ({ hypothesis, account }) => ({
       nextDecision: `Decide who on the customer side can confirm the ${hypothesis.department} Skills policy before your next plan review.`,
       objective: `Resolve the access question through the right owner, then learn what ${hypothesis.department}’s recurring work is.`,
       question: `Before we plan anything for ${hypothesis.department}: is the Skills restriction a standing policy, or is it under review? I would rather work with your admin than around it.`,
@@ -150,6 +155,7 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
         'A context-gathering step is agreed in place of training.',
       ],
       watchOut: 'You know the account well enough to guess the reason. Confirm it anyway.',
+      dealNote: `${account.crm.dealSituation} You have the relationship to ask the admin directly, so the access question can be settled before the review.`,
       sourcedAdvice: [
         {
           text: 'Analytics access is created by the customer’s primary owner. You only see what the customer chooses to share.',
@@ -159,7 +165,7 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
     }),
   },
   monitor: {
-    'ae-new': ({ hypothesis }) => ({
+    'ae-new': ({ hypothesis, account }) => ({
       nextDecision: `Decide whether ${hypothesis.department} belongs in this conversation at all.`,
       objective: 'Keep the review focused. A healthy-looking team is a reason to ask what works, and nothing more yet.',
       question: `What are the two or three things ${hypothesis.department} has set up in Claude that they would not want to lose?`,
@@ -168,9 +174,10 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
         'You ask what the Projects and Skills are used for.',
       ],
       watchOut: 'Feature use is not the same as useful work. Do not turn this into a reference story without asking.',
+      dealNote: `${account.crm.dealSituation} ${hypothesis.department} is not what this meeting is about.`,
       sourcedAdvice: [],
     }),
-    'csm-experienced': ({ hypothesis }) => ({
+    'csm-experienced': ({ hypothesis, account }) => ({
       nextDecision: `Decide whether to line up ${hypothesis.department} as a source of peer examples for after the first pilot.`,
       objective: `Sequence the work. ${hypothesis.department} can wait until the pilot has a result to compare against.`,
       question: `Once the first pilot has a result, would someone in ${hypothesis.department} be willing to show how they set up their shared work?`,
@@ -179,6 +186,7 @@ const GUIDANCE: Record<HypothesisKind, Record<SellerProfileId, GuidanceBuilder>>
         'Any peer example is shared with the team’s permission.',
       ],
       watchOut: 'Starting a second workstream now splits the sponsor’s attention.',
+      dealNote: `${account.crm.dealSituation} ${hypothesis.department} becomes useful once there is a pilot result to compare against.`,
       sourcedAdvice: [],
     }),
   },

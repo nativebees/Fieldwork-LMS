@@ -22,6 +22,15 @@ describe('scenario coaching provider', () => {
     expect(`${ae.objective} ${csm.objective}`).not.toMatch(/AE|CSM/);
   });
 
+  it('guidance states how role, tenure and the live deal shaped it', async () => {
+    const ae = await scenarioCoaching.getGuidance({ seller: SELLER_PROFILES['ae-new'], account: ACCOUNT, hypothesis: marketing });
+    const csm = await scenarioCoaching.getGuidance({ seller: SELLER_PROFILES['csm-experienced'], account: ACCOUNT, hypothesis: marketing });
+    for (const g of [ae, csm]) expect(g.dealNote).toContain(ACCOUNT.crm.dealSituation);
+    expect(ae.dealNote).toMatch(/45 days in/);
+    expect(csm.dealNote).toMatch(/18 months/);
+    expect(ae.dealNote).not.toEqual(csm.dealNote);
+  });
+
   it('is reproducible', async () => {
     const request = { seller: SELLER_PROFILES['ae-new'], account: ACCOUNT, hypothesis: marketing };
     expect(await scenarioCoaching.getGuidance(request)).toEqual(await scenarioCoaching.getGuidance(request));

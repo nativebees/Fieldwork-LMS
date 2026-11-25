@@ -37,16 +37,16 @@ The same holds for analytics. `SyntheticAnalyticsProvider` is the only provider.
 
 Five of the six primary references were fetched and read on 2026-11-25 during the build. The knowledge pack in `src/fixtures/knowledge.ts` holds an original summary of each, with that date.
 
-| Source                                                                  | Read on 2026-11-25                                       |
-| ----------------------------------------------------------------------- | -------------------------------------------------------- |
-| Analytics APIs (platform.claude.com)                                    | Yes                                                      |
-| List User Activity reference (platform.claude.com)                      | Yes                                                      |
-| View usage analytics for Team and Enterprise plans (support.claude.com) | Yes                                                      |
-| Create surveys for your organization (support.claude.com)               | Yes                                                      |
-| Brand guidelines skill (github.com/anthropics/skills)                   | Yes                                                      |
-| Role posting (job-boards.greenhouse.io)                                 | No. The host was unreachable from the build environment. |
+| Source                                                                  | Read on 2026-11-25                                         |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Analytics APIs (platform.claude.com)                                    | Yes                                                        |
+| List User Activity reference (platform.claude.com)                      | Yes                                                        |
+| View usage analytics for Team and Enterprise plans (support.claude.com) | Yes                                                        |
+| Create surveys for your organization (support.claude.com)               | Yes                                                        |
+| Brand guidelines skill (github.com/anthropics/skills)                   | Yes                                                        |
+| Role posting (job-boards.greenhouse.io)                                 | Not fetched. Sean supplied the posting text on 2026-11-25. |
 
-The role posting is carried in the knowledge pack with no review date and a "needs review" flag, and the app gives no summary of it. A second review-required entry, a synthetic undated field note, is cited by the account guidance and by the generic Skill lesson so the interface can show advice that leans on an unreviewed source.
+The role posting's host was unreachable from the build environment. Its summary in the knowledge pack was written from the text Sean supplied, and the entry says so. One entry has no review date: a synthetic, undated field note. It is cited by the account guidance and by the generic Skill lesson so the interface can show advice that leans on an unreviewed source.
 
 ## Where current documentation differs from the brief or the fixture
 
@@ -65,7 +65,7 @@ Run on 2026-11-25 in the build environment (Linux, Node 22, Chromium via Playwri
 
 | Suite                             | Result                                             |
 | --------------------------------- | -------------------------------------------------- |
-| Unit tests, `npm test`            | 83 passed in 12 files                              |
+| Unit tests, `npm test`            | 87 passed in 12 files                              |
 | Browser tests, `npm run test:e2e` | 9 passed: 8 at 1440×900 and 1 on a Pixel 7 profile |
 | Typecheck and production build    | Pass                                               |
 
@@ -92,7 +92,8 @@ An axe-core check runs against each view and dialog at WCAG 2.1 AA and reports n
 - No screen reader was used. The accessibility evidence is automated checks, focus assertions and live-region assertions.
 - Only Chromium was tested. Safari and Firefox were not.
 - Touch dragging was not exercised on a real device. The phone test uses the buttons, which are the intended touch route.
-- Nothing is deployed. There is no public URL.
+- The personalization is scripted for two profiles and one deal. No model tailors anything.
+- Hosting is for review. Sean approved GitHub Pages on 2026-11-25 so he could test the live build. The page carries a `noindex` tag and has not been announced or shared.
 - No outcome is claimed. There is no win rate, revenue, time saved, adoption lift or behaviour change behind this demo. The 14 and 28 day follow-up is a proposed plan. Completing practice in the demo does not change any customer figure, and a test enforces that.
 - Seller practice scores describe choices in a scripted task. They are not an assessment of a person.
 
@@ -106,9 +107,10 @@ An axe-core check runs against each view and dialog at WCAG 2.1 AA and reports n
 - The app ships as one JavaScript chunk of about 544 kB, 162 kB gzipped, plus about 256 kB of bundled fonts.
 - Lesson copy, the sponsor script and coaching text were drafted during the build and have not been edited by the author yet.
 
-## Smallest next step toward a public URL
+## Next steps
 
-1. Sean reviews the build locally and edits any scenario copy he wants in his own words.
+1. Sean reviews the hosted build and edits any scenario copy he wants in his own words.
 2. Two reviewers attempt the same task, and one meaningful revision is made from what they do. Record the observations in `AUTHORSHIP.md`.
-3. Re-read the role posting and recheck the other five sources, then update the dates in `src/fixtures/knowledge.ts`.
-4. With Sean's approval, connect this repository to a static host with build command `npm run build` and output directory `dist`.
+3. Add one genuine Claude call behind a server-side route, as described in `docs/LIVE_COACHING.md`. It is the largest gap between the demo and the role, and a static host cannot hold the key.
+4. Recheck the five fetched sources and re-read the role posting, then update the dates in `src/fixtures/knowledge.ts`.
+5. Remove the `noindex` tag from `index.html` when the site is ready to be shared widely.

@@ -29,6 +29,10 @@ export const ACCOUNT: AccountContext = {
   recurringTask: 'campaign briefs',
   crm: {
     label: 'Simulated CRM and call-note context. No CRM is connected.',
+    asOf: '2026-11-25',
+    surface: 'The account record, in meeting prep',
+    dealSituation: 'An adoption review ahead of a June 2027 renewal. The sponsor wants to see value before any conversation about seats.',
+    dealLabel: 'Adoption review, renewal June 2027',
     stage: 'Adoption review',
     renewal: 'June 2027',
     nextMeeting: { date: '2026-12-02', title: 'Adoption review with Dana Whitfield' },

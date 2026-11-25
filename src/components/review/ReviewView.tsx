@@ -9,6 +9,7 @@ import { formatDateRange, formatTime, plural } from '../../lib/format';
 import { hrefFor } from '../../lib/router';
 import {
   baselineProgram,
+  buildEnablementMeasurement,
   buildFollowUpPlan,
   buildMarkdownBrief,
   buildPlanJson,
@@ -85,6 +86,7 @@ export function ReviewView() {
   const progress = programProgress(program, state.attempts);
   const orphans = orphanedAttempts(program, state.attempts);
   const plan = buildFollowUpPlan(state);
+  const impact = buildEnablementMeasurement(state);
   const lessons = listLessons(program);
 
   const exportContext = (): ExportContext => ({
@@ -395,7 +397,53 @@ export function ReviewView() {
         </p>
       </Part>
 
-      <Part n={6} title="Export" testId="review-export" aside={<Tag tone="outline">Local download</Tag>}>
+      <Part n={6} title="Seller impact" testId="review-impact" aside={<Tag tone="ochre">Proposed, not measured</Tag>}>
+        <p className="max-w-[64ch] text-[14.5px] leading-relaxed">
+          Enablement is judged by what it changes: first in how the seller works, then on the account, then commercially. Completion and
+          satisfaction are left out on purpose.
+        </p>
+        <ol className="mt-4 flex flex-col">
+          {impact.measures.map((m, i) => (
+            <li
+              key={m.id}
+              className="grid gap-x-6 gap-y-1 border-t border-rule py-3 first:border-t-0 sm:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]"
+              data-testid={`impact-${m.id}`}
+              data-status={m.status}
+            >
+              <div>
+                <p className="flex items-baseline gap-2 text-[14px] font-semibold">
+                  <span className="meta tabular text-[11.5px]" aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  {m.level}
+                </p>
+                <p className="mt-1 text-[13.5px] leading-snug text-ink-2">{m.measure}</p>
+              </div>
+              <div className="text-[13px] leading-snug">
+                <Tag tone={m.status === 'proposed' ? 'outline' : 'neutral'}>
+                  {m.status === 'recorded-locally'
+                    ? 'In this session'
+                    : m.status === 'practice-only'
+                      ? 'Practice only'
+                      : 'Needs real follow-up'}
+                </Tag>
+                <p className="mt-1.5 text-ink-2">{m.inThisDemo}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-3 text-[13.5px] leading-snug" data-testid="impact-focus">
+          <span className="font-semibold">For this seller. </span>
+          {impact.focus}
+        </p>
+        <p className="mt-2 text-[13.5px] leading-snug">
+          <span className="font-semibold">Before scaling. </span>
+          {impact.pilot}
+        </p>
+        <p className="mt-3 text-[13px] leading-snug text-ink-2">{impact.boundary}</p>
+      </Part>
+
+      <Part n={7} title="Export" testId="review-export" aside={<Tag tone="outline">Local download</Tag>}>
         <p className="max-w-[62ch] text-[14.5px] leading-relaxed">
           Both files are built from the plan as it stands right now. Exporting downloads a file to this device. It does not send, assign,
           publish or enroll anyone.

@@ -26,9 +26,13 @@ Sean has not yet reviewed or edited that copy. Anything he rewrites should be no
 
 ## Testing
 
-Automated tests were run on 2026-11-25 in the build environment. The results are in `EVIDENCE.md`: 83 unit tests and 9 browser tests passing, including an axe-core accessibility check.
+Automated tests were run on 2026-11-25 in the build environment. The results are in `EVIDENCE.md`: 87 unit tests and 9 browser tests passing, including an axe-core accessibility check.
 
 No person has tested the application. No screen reader, Safari, Firefox or physical touch device was used.
+
+## Publication
+
+On 2026-11-25 Sean approved hosting the build on GitHub Pages so he could review it live. On the same day he supplied the text of the role posting and asked for the product to be checked against it. The changes that followed are listed in `ROLE_FIT.md` and in decisions 26 to 29 of `DECISIONS.md`.
 
 ## Reviewer feedback
 

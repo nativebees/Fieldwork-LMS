@@ -42,6 +42,13 @@ export interface MemberRecord {
 
 export interface SimulatedCrmContext {
   label: string;
+  /** The synthetic "today" of the scenario. Never the real clock. */
+  asOf: ISODate;
+  /** Where this brief would surface in a seller's existing tools. */
+  surface: string;
+  /** The live deal, in a sentence. One of the three things guidance is tailored to. */
+  dealSituation: string;
+  dealLabel: string;
   stage: string;
   renewal: string;
   nextMeeting: { date: ISODate; title: string };

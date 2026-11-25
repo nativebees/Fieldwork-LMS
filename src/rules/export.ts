@@ -69,6 +69,87 @@ export function buildFollowUpPlan(state: AppState): FollowUpPlan {
   };
 }
 
+export interface EnablementMeasure {
+  id: 'use-in-work' | 'live-behaviour' | 'customer-outcome' | 'commercial';
+  level: string;
+  measure: string;
+  /** What this prototype can actually show for this level, read from the current state. */
+  inThisDemo: string;
+  status: 'recorded-locally' | 'practice-only' | 'proposed';
+}
+
+export interface EnablementMeasurement {
+  status: 'proposed';
+  measures: EnablementMeasure[];
+  /** Which measure matters first for this seller. It follows role and tenure. */
+  focus: string;
+  pilot: string;
+  boundary: string;
+}
+
+/**
+ * How the enablement itself would be judged: by what it changes in how the seller
+ * works, then on the account, then commercially. Completion and satisfaction are
+ * left out on purpose. Everything beyond the first two rows needs real follow-up.
+ */
+export function buildEnablementMeasurement(state: AppState): EnablementMeasurement {
+  const rubric = scoreSellerRubric({
+    profileId: state.sellerProfileId,
+    rehearsal: state.rehearsal,
+    program: state.program,
+    constraintKnown: state.constraint !== null,
+  });
+  const total = rubricTotal(rubric);
+  const changes = diffPrograms(baselineProgram(state), state.program).length;
+  const firstCall = state.decisions['hyp-marketing'] ? 'A first call was recorded' : 'No first call was recorded';
+  const heard = state.constraint ? 'the customer’s constraint was heard' : 'the customer’s constraint has not been heard yet';
+  const seller = SELLER_PROFILES[state.sellerProfileId];
+
+  return {
+    status: 'proposed',
+    measures: [
+      {
+        id: 'use-in-work',
+        level: 'Used in the flow of work',
+        measure: 'Share of adoption reviews where the seller recorded a hypothesis before the meeting and a revised plan after it.',
+        inThisDemo: `${firstCall}, ${heard} and ${changes} program ${changes === 1 ? 'change' : 'changes'} followed. These are events in this browser only.`,
+        status: 'recorded-locally',
+      },
+      {
+        id: 'live-behaviour',
+        level: 'Behaviour in the live conversation',
+        measure: 'In the seller’s next real review, a manager or a call review scores the same five criteria used in the rehearsal.',
+        inThisDemo:
+          total.scored === 0
+            ? 'Not rehearsed yet. The rehearsal is a scripted task, not a live conversation.'
+            : `${total.points} of ${total.max} on a scripted task. That is practice, not a live conversation.`,
+        status: 'practice-only',
+      },
+      {
+        id: 'customer-outcome',
+        level: 'Customer outcome',
+        measure: `${buildFollowUpPlan(state).measure}, checked at 14 and 28 days.`,
+        inThisDemo: 'Not produced by this demo.',
+        status: 'proposed',
+      },
+      {
+        id: 'commercial',
+        level: 'Commercial outcome',
+        measure:
+          'Ramp time, win rate and attainment, compared across matched cohorts or a staggered rollout, with a baseline and a check for other changes in the same period.',
+        inThisDemo: 'Not produced by this demo. A better practice score is not revenue evidence.',
+        status: 'proposed',
+      },
+    ],
+    focus:
+      state.sellerProfileId === 'ae-new'
+        ? `For a seller ${seller.tenureLabel.replace(' in role', '')} in, the first commercial measure to watch is ramp time: how soon they run a review like this one without help.`
+        : `For a CSM ${seller.tenureLabel.replace(' in role', '')} in, the measure to watch is attainment on accounts where a pilot ran, against similar accounts where it did not.`,
+    pilot: 'Test on live adoption reviews in one segment first, staggered by team. Scale only what changes behaviour in the room.',
+    boundary: 'Proposed measures. None has been collected. Completion and satisfaction are left off this list on purpose.',
+  };
+}
+
 export interface ExplainedChange {
   change: ProgramChange;
   summary: string;
@@ -206,6 +287,7 @@ export function buildPlanJson(ctx: ExportContext): Record<string, unknown> {
       attempts: state.attempts,
     },
     followUp: buildFollowUpPlan(state),
+    enablementMeasurement: buildEnablementMeasurement(state),
     prototypeEvents: state.events,
   };
 }

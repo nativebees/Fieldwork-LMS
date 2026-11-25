@@ -70,6 +70,13 @@ test.describe('golden path', () => {
     await expect(page.getByTestId('cohort-row-marketing')).toContainText('8 of 64');
     await expect(page.getByTestId('cohort-row-finance')).toContainText('Unavailable');
 
+    /* Guidance is tailored to role, tenure and the live deal, and it starts from the seller's own work */
+    await expect(page.getByTestId('tailored-to')).toContainText('Role · Enterprise AE');
+    await expect(page.getByTestId('tailored-to')).toContainText('Tenure · 45 days in role');
+    await expect(page.getByTestId('tailored-to')).toContainText('Live deal · Adoption review, renewal June 2027');
+    await expect(page.getByTestId('flow-of-work')).toContainText('7 days before the review');
+    const aeDealNote = await page.getByTestId('deal-note').textContent();
+
     /* Changing the seller context changes the coaching decision */
     const aeDecision = await page.getByTestId('next-decision-title').textContent();
     const aeQuestion = await page.getByTestId('next-decision-question').textContent();
@@ -77,6 +84,8 @@ test.describe('golden path', () => {
     await page.getByRole('radio', { name: /Experienced CSM/ }).click();
     await expect(page.getByTestId('next-decision-title')).not.toHaveText(aeDecision!);
     await expect(page.getByTestId('next-decision-question')).toContainText('four-week pilot');
+    await expect(page.getByTestId('tailored-to')).toContainText('Tenure · 18 months in role');
+    expect(await page.getByTestId('deal-note').textContent()).not.toBe(aeDealNote);
     expect(await page.getByTestId('next-decision-question').textContent()).not.toBe(aeQuestion);
     expect(await page.getByTestId('next-decision-criteria').textContent()).not.toBe(aeCriteria);
     await page.getByRole('radio', { name: /New Enterprise AE/ }).click();
@@ -275,6 +284,13 @@ test.describe('golden path', () => {
     await expect(page.getByTestId('review-seller-total')).toHaveText('10 / 10');
     await expect(page.getByTestId('review-learner-total')).toContainText('8 / 10 criteria');
     await expect(page.getByTestId('review-followup')).toContainText('Proposed, not measured');
+    // Seller impact is a proposed ladder that ends in ramp time, win rate and attainment. Nothing is claimed.
+    await expect(page.getByTestId('review-impact')).toContainText('Proposed, not measured');
+    await expect(page.getByTestId('impact-use-in-work')).toContainText('A first call was recorded');
+    await expect(page.getByTestId('impact-live-behaviour')).toContainText('10 of 10 on a scripted task');
+    await expect(page.getByTestId('impact-commercial')).toContainText('Ramp time, win rate and attainment');
+    await expect(page.getByTestId('impact-commercial')).toContainText('Not produced by this demo');
+    await expect(page.getByTestId('impact-focus')).toContainText('ramp time');
     // Completing practice never changes the customer's adoption figures.
     await expect(page.getByTestId('review-adoption')).toContainText('156 of 200 seats active (78%)');
 
@@ -448,7 +464,11 @@ test.describe('golden path', () => {
     await expect(about.getByTestId('integration-enterprise-analytics')).toContainText('Proposed, not built');
     await expect(about.getByTestId('integration-claude-coaching')).toContainText('Optional, off in this build');
     await expect(about).toContainText('It is not an Anthropic product');
-    await expect(about.getByTestId('source-src-role')).toContainText('Needs review');
+    await expect(about.getByTestId('role-fit')).toContainText('Tailored to each seller’s role, tenure and live deals');
+    await expect(about.getByTestId('role-fit')).toContainText('No model tailors anything at runtime');
+    await expect(about.getByTestId('standards')).toContainText('An unavailable value is never shown as zero.');
+    await expect(about.getByTestId('source-src-role')).toContainText('Head of Enablement Experience & Innovation');
+    await expect(about.getByTestId('source-src-field-note')).toContainText('Needs review');
     // Focus stays inside the dialog.
     for (let i = 0; i < 40; i += 1) await page.keyboard.press('Tab');
     expect(await page.evaluate(() => document.activeElement?.closest('[role="dialog"]') !== null)).toBe(true);

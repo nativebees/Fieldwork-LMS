@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { CircleCheck, CircleDashed, CircleX } from 'lucide-react';
 import { SOURCES } from '../fixtures/knowledge';
+import { ROLE_FIT, ROLE_FIT_INTRO, STANDARDS } from '../fixtures/roleFit';
 import { INTEGRATIONS, type IntegrationStatus } from '../providers/analytics';
 import { liveCoaching } from '../providers/coaching';
 import { useStore } from '../state/store';
@@ -69,6 +70,35 @@ export function AboutDrawer({ open, onClose }: { open: boolean; onClose: () => v
         <p className="mt-2 text-[14px] leading-relaxed text-ink-2">
           It is not an Anthropic product and does not describe Anthropic’s internal systems.
         </p>
+      </Section>
+
+      <Section title="Why it is built this way">
+        <p className="text-[13.5px] leading-relaxed">{ROLE_FIT_INTRO}</p>
+        <ul className="mt-3 flex flex-col" data-testid="role-fit">
+          {ROLE_FIT.map((row) => (
+            <li key={row.id} className="border-t border-rule py-2.5 first:border-t-0">
+              <p className="text-[13.5px] font-semibold">{row.asked}</p>
+              <p className="mt-0.5 text-[13px] leading-snug">{row.shown}</p>
+              <p className="mt-0.5 text-[12.5px] leading-snug text-ink-2">
+                <span className="font-semibold">Not shown. </span>
+                {row.notShown}
+              </p>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-2 text-[12.5px] leading-snug text-ink-2">
+          These choices are derived from the public role posting, listed under Sources. They do not describe Anthropic’s internal systems.
+        </p>
+      </Section>
+
+      <Section title="Standards for data and AI use">
+        <ul className="flex flex-col gap-2" data-testid="standards">
+          {STANDARDS.map((item) => (
+            <li key={item.id} className="text-[13px] leading-snug">
+              <span className="font-semibold">{item.rule}</span> <span className="text-ink-2">{item.where}</span>
+            </li>
+          ))}
+        </ul>
       </Section>
 
       <Section title="Synthetic, simulated and real">

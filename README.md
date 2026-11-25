@@ -4,6 +4,8 @@ A practice studio for Claude. Independent portfolio concept by Sean Gillespie.
 
 Fieldwork helps a seller or CSM turn an account's adoption signals into a better customer conversation, a tailored learning program and evidence that the customer can do useful work. It runs one complete journey on one synthetic account, Meridian Works.
 
+It answers a sales enablement role that asks for learning personalized to each seller's role, tenure and live deals, delivered in the flow of work and measured by what it changes. `ROLE_FIT.md` maps that posting to the product and names the gaps.
+
 This is a working product prototype with simulated coaching. It is not an Anthropic product, it uses no customer data and it makes no model call at runtime. `EVIDENCE.md` says exactly what is synthetic, what is scripted and what has not been tested.
 
 ![The account mission view, with the next decision and simulated CRM context](docs/screenshots/account.webp)
@@ -78,9 +80,19 @@ npx playwright install chromium
 
 ## Hosting
 
-The build is a static site with hash-based navigation, so it needs no server and no rewrite rules. Nothing has been published. No hosting account, domain or repository connection has been created.
+The build is a static site with hash-based navigation, so it needs no server and no rewrite rules.
 
-For Cloudflare Pages, or any equivalent static host:
+### GitHub Pages
+
+`.github/workflows/deploy-pages.yml` runs the typecheck, the unit tests and the build on every push to `main`, then publishes `dist/` to GitHub Pages. The site address is `https://nativebees.github.io/Fieldwork-LMS/`.
+
+It needs one setting, once: in the repository, open Settings, then Pages, and set Source to GitHub Actions.
+
+The page carries a `noindex` tag while it is under review. Remove that line from `index.html` when the site is ready to be found by search engines.
+
+### Any other static host
+
+For Cloudflare Pages or an equivalent:
 
 | Setting               | Value           |
 | --------------------- | --------------- |
@@ -89,9 +101,9 @@ For Cloudflare Pages, or any equivalent static host:
 | Node version          | 22              |
 | Environment variables | None            |
 
-`public/_headers` sets a content security policy and cache headers in the format Cloudflare Pages reads. Other hosts ignore it, and the app works without it. The build uses relative asset paths, so it also runs from a subpath.
+`public/_headers` sets a content security policy and cache headers in the format Cloudflare Pages reads. Other hosts, including GitHub Pages, ignore it, and the app works without it. The build uses relative asset paths, so it also runs from a subpath.
 
-The smallest next step toward a public URL is listed at the end of `EVIDENCE.md`.
+Next steps are listed at the end of `EVIDENCE.md`.
 
 ## Demo switches
 
@@ -116,6 +128,7 @@ docs/               Integration boundaries that are documented but not built.
 
 ## Further reading
 
+- `ROLE_FIT.md` maps the role posting to the product, with the gaps.
 - `DESIGN.md` covers tokens, layout and interaction decisions.
 - `EVIDENCE.md` separates synthetic data, scenario coaching, optional live behaviour and untested outcomes.
 - `DECISIONS.md` is the log of decisions actually made during the build.

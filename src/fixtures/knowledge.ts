@@ -113,15 +113,15 @@ export const SOURCES: SourceReference[] = [
   {
     id: 'src-role',
     kind: 'official',
-    title: 'Role posting this concept responds to',
+    title: 'Head of Enablement Experience & Innovation',
     publisher: 'Anthropic careers (Greenhouse)',
     url: 'https://job-boards.greenhouse.io/anthropic/jobs/5461190008',
     summary:
-      'Listed in the product brief as the role behind this concept. No summary is given because the page could not be re-read while the prototype was built.',
-    checkedOn: null,
-    review: 'review-required',
+      'The role this concept responds to. It asks for Claude-first sales enablement: personalized to each seller’s role, tenure and live deals, delivered in the tools sellers already use and measured by what it changes, including ramp time, win rate and attainment. It also asks for accurate, findable knowledge and clear standards for responsible AI use and data governance.',
+    checkedOn: KNOWLEDGE_CHECKED_ON,
+    review: 'reviewed',
     reviewNote:
-      'The host was unreachable from the build environment on 2026-11-25. The product brief records its own check on that date. Re-read before publication.',
+      'Summarized from the posting text the author supplied on 2026-11-25. The page itself could not be fetched from the build environment.',
   },
   {
     id: 'src-field-note',

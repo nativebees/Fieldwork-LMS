@@ -29,3 +29,14 @@ export function formatTime(iso: string): string {
 export function plural(n: number, one: string, many = `${one}s`): string {
   return `${n} ${n === 1 ? one : many}`;
 }
+
+/** Whole days from one ISO date to another, in UTC so it never depends on the visitor's clock. */
+export function daysBetween(from: string, to: string): number {
+  const ms = Date.UTC(...ymd(to)) - Date.UTC(...ymd(from));
+  return Math.round(ms / 86_400_000);
+}
+
+function ymd(isoDate: string): [number, number, number] {
+  const { y, m, d } = parts(isoDate);
+  return [y, m - 1, d];
+}

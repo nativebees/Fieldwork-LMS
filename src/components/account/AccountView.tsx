@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, CircleAlert, RefreshCw, TriangleAlert } from 'lucide-react';
 import { ACCOUNT, OBSERVATION_WINDOW, SELLER_PROFILES, SNAPSHOT_LABEL } from '../../fixtures/account';
-import { formatDate, formatDateRange } from '../../lib/format';
+import { daysBetween, formatDate, formatDateRange } from '../../lib/format';
 import { useAsyncValue } from '../../lib/hooks';
 import { hrefFor } from '../../lib/router';
 import { activeCoachingProvider } from '../../providers/coaching';
@@ -48,6 +48,22 @@ function NextDecision({ hypothesis }: { hypothesis: LearningNeedHypothesis }) {
       <h2 id="next-decision" className="font-display mt-2 max-w-[24ch] text-[26px] sm:text-[30px]" data-testid="next-decision-title">
         {g.nextDecision}
       </h2>
+      <dl
+        className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5"
+        data-testid="tailored-to"
+        aria-label="What this guidance is tailored to"
+      >
+        <dt className="eyebrow mr-1">Tailored to</dt>
+        <dd>
+          <Tag tone="neutral">Role · {seller.shortRole}</Tag>
+        </dd>
+        <dd>
+          <Tag tone="neutral">Tenure · {seller.tenureLabel}</Tag>
+        </dd>
+        <dd>
+          <Tag tone="neutral">Live deal · {ACCOUNT.crm.dealLabel}</Tag>
+        </dd>
+      </dl>
       <p className="mt-2.5 max-w-[60ch] text-[15px] leading-relaxed text-ink-2">{g.objective}</p>
 
       <div className="mt-6 grid gap-x-10 gap-y-6 md:grid-cols-2">
@@ -70,7 +86,12 @@ function NextDecision({ hypothesis }: { hypothesis: LearningNeedHypothesis }) {
         </div>
       </div>
 
-      <p className="mt-5 flex max-w-[66ch] items-start gap-2 text-[14px] leading-snug">
+      <p className="mt-5 max-w-[66ch] text-[14px] leading-snug" data-testid="deal-note">
+        <span className="font-semibold">On this deal. </span>
+        {g.dealNote}
+      </p>
+
+      <p className="mt-3 flex max-w-[66ch] items-start gap-2 text-[14px] leading-snug">
         <TriangleAlert size={15} className="mt-[2px] shrink-0 text-terracotta-deep" aria-hidden="true" />
         <span>
           <span className="font-semibold">Watch out. </span>
@@ -204,11 +225,16 @@ export function AccountView() {
         <aside className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start" aria-label="Context">
           <section className="paper overflow-hidden" data-testid="crm-strip">
             <div className="hatch-soft flex items-center justify-between gap-2 border-b border-rule px-4 py-2">
-              <p className="eyebrow bg-surface-soft px-1">In your day</p>
+              <p className="eyebrow bg-surface-soft px-1">In the flow of work</p>
               <Tag tone="ochre">Simulated</Tag>
             </div>
             <div className="px-4 py-3.5">
-              <p className="text-[12.5px] leading-snug text-ink-2">{ACCOUNT.crm.label}</p>
+              <p className="text-[13px] leading-snug" data-testid="flow-of-work">
+                This brief would open from {ACCOUNT.crm.surface.charAt(0).toLowerCase() + ACCOUNT.crm.surface.slice(1)},{' '}
+                <span className="font-semibold">{daysBetween(ACCOUNT.crm.asOf, ACCOUNT.crm.nextMeeting.date)} days before the review</span>.
+                It is not a course to find and finish.
+              </p>
+              <p className="mt-1.5 text-[12.5px] leading-snug text-ink-2">{ACCOUNT.crm.label}</p>
               <dl className="mt-3 flex flex-col gap-2.5 text-[13.5px]">
                 <div className="flex justify-between gap-3">
                   <dt className="text-ink-2">Stage</dt>
